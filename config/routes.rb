@@ -14,7 +14,8 @@ Rails.application.routes.draw do
     get "/journals" => "journals#index"
     get "/journals/:id" => "journals#show"
     post "/journals" => "journals#create"
-
+    patch "/journals/:id" => "journals#update"
+    delete "/journals/:id" => "journals#destroy"
   end
 
 
