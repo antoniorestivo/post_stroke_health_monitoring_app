@@ -1,1 +1,3 @@
-@journals
+@journals.map do |journal|
+  render partial: "journal.json.jb", locals: { journal: journal}
+end

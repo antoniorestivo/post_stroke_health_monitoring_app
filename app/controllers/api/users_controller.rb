@@ -1,4 +1,6 @@
 class Api::UsersController < ApplicationController
+  
+  before_action :authenticate_user, except: [:create]
   def create
     @user = User.new(
       email: params[:email],
@@ -13,14 +15,14 @@ class Api::UsersController < ApplicationController
   end
 
   def show
-    @user = User.find_by(id: params[:id])
+    @user = current_user
     render "show.json.jb"
   end
  
   def update
     #update users
-    user_id = params[:id]
-    @user = User.find_by(id: user_id)
+  
+    @user = current_user
     @user.email = params[:email] || @user.email
     if params[:password]
       if @user.authenticate(params[:old_password])
@@ -31,14 +33,14 @@ class Api::UsersController < ApplicationController
       end
     end
     if @user.save
-      render json: { message: "User updated successfully" }, status: :created
+      render "show.json.jb", status: 200
     else  
       render json: {errors: @user.errors.full_messages}, status: 422
     end
   end
 
   def destroy
-    user = User.find_by(id: params[:id])
+    user = current_user
     user.destroy
     render json: {message: "User successfully deleted!"}
   end

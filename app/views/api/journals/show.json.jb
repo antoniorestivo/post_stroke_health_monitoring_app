@@ -1,1 +1,1 @@
-@journal
+render partial: "journal.json.jb", locals: { journal: @journal}
