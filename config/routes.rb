@@ -16,6 +16,8 @@ Rails.application.routes.draw do
     post "/journals" => "journals#create"
     patch "/journals/:id" => "journals#update"
     delete "/journals/:id" => "journals#destroy"
+
+    post "/sessions" => "sessions#create"
   end
 
 
