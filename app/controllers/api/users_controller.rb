@@ -22,8 +22,14 @@ class Api::UsersController < ApplicationController
     user_id = params[:id]
     @user = User.find_by(id: user_id)
     @user.email = params[:email] || @user.email
-    @user.password_digest = params[:password_digest] || @user.password_digest
-
+    if params[:password]
+      if @user.authenticate(params[:old_password])
+        @user.update!(
+          password: params[:password],
+          password_confirmation: params[:password_confirmation]
+        ) 
+      end
+    end
     if @user.save
       render json: { message: "User updated successfully" }, status: :created
     else  
