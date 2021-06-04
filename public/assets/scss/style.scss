@@ -1,0 +1,91 @@
+/*
+
+Template: Psycare - Psychology and Counseling Template
+Version: 1.0.0
+Author: potenzaglobalsolutions
+Design and Developed by: potenzaglobalsolutions.com
+
+NOTE: This is main stylesheet of template, This file contains the styling for the actual Template.
+
+*/
+
+/*================================================
+[  Table of contents  ]
+================================================
+
+ :: Typography
+ :: Helper Classes
+ :: Shortcodes
+  	- Accordion
+  	- Blockquote
+  	- Button
+    - Counter
+    - Datetimepicker
+    - Feature Info
+    - Owl Carousel
+    - Portfolio
+    - Pricing Table
+    - Range Slider
+    - Select Dropdown
+    - Service
+    - Tabs
+    - Team
+    - Testimonial
+ :: Header
+   - Header Transparent
+   - Header 02
+   - Header 03
+ :: Banner
+   - Banner 01
+   - Banner 02
+   - Banner Overlay
+   - Banner Shape
+ :: Layout
+ :: Blog
+   - Blog Detail
+   - Blog Sidebar
+ :: Shop
+   - Product
+   - Product Detail
+   - Checkout
+   - Cart
+ :: Footer
+
+
+======================================
+[ End table content ]
+======================================*/
+
+// Core files
+@import "variables";
+@import "helpers";
+@import "typography";
+
+
+// Shortcodes
+@import "shortcodes/accordion";
+@import "shortcodes/blockquote";
+@import "shortcodes/button";
+@import "shortcodes/counter";
+@import "shortcodes/datetimepicker";
+@import "shortcodes/feature-info";
+@import "shortcodes/owl-carousel";
+@import "shortcodes/portfolio";
+@import "shortcodes/pricing";
+@import "shortcodes/range-slider";
+@import "shortcodes/select";
+@import "shortcodes/service";
+@import "shortcodes/skill";
+@import "shortcodes/tabs";
+@import "shortcodes/team";
+@import "shortcodes/testimonial";
+
+// Structure
+@import "header";
+@import "banner";
+@import "layout";
+
+// Pages
+@import "blog";
+@import "shop";
+@import "footer";

@@ -1,0 +1,120 @@
+/*****************************
+  Shortcodes
+*****************************/
+
+/*****************************
+  Accordion
+*****************************/
+
+.accordion {
+	.card{
+		background: none;
+		border: none;
+		padding:15px;
+		.card-header{
+			background:inherit;
+			padding: 0;
+			border-radius: $border-radius;
+			border-bottom: none;
+			button{
+				position: relative;
+				font-size: 18px;
+				color: $white;
+				padding:15px 50px 15px 20px;
+				width: 100%;
+				text-align: left;
+				box-shadow: none;
+				overflow:visible;
+				background-color:$primary; 
+				border:1px solid rgba($primary,0.5) ;
+				&:before{
+					position: absolute;
+					top: 50%;
+					transform: translateY(-50%);
+					right: 10px;
+					left: inherit;
+					content: "\f107";
+					font-size: 22px;
+					color: $white;
+					font-family: "Font Awesome 5 Free";
+					border: none;
+					border-radius: $border-radius;
+					z-index: 9;
+					font-weight: 900;
+					width: 35px;
+					height: 35px;
+					line-height: 35px;
+					text-align: center;
+					background: none;
+				}
+				&:after{
+					width: 55px;
+					box-shadow: inherit;
+					border-radius: 0px 3px 3px 0px;
+					position: absolute;
+					content: "";
+					right:0;
+					top: 0;
+					background: none;
+					height: 100%;
+					transition: all 0.5s ease-in-out;
+				}
+			}
+		}
+		.card-body {
+			padding: 10px 50px 0px 20px;
+		}
+	}
+}
+.accordion .card .accordion-icon.card-header button.collapsed{
+	border:1px solid rgba($primary,0.5) ;
+	background-color: inherit;
+	color: $gray-8;
+	background-color:$white; 
+}
+.accordion .card .accordion-icon.card-header button.collapsed:after {
+	background: none;
+	box-shadow: inherit;
+	border-radius: 0px 3px 3px 0px;
+}
+.accordion .accordion-icon.card-header button.collapsed:before{
+	content: "\f105";
+	color: $gray-8;
+}
+
+
+.accordion.accordion-2{
+	 .card{
+	 	padding: 15px 0;
+	 	 .card-header{
+	 	 	 button{
+	 	 	 	padding: 8px 50px 8px 20px;
+	 	 	 }
+	 	 }
+	 }
+}
+
+
+
+/* Responsive */
+
+@media (max-width:575px) {
+
+	.accordion .accordion-icon.card-header button{
+		font-size: 18px;
+		padding: 15px 20px 15px 70px;
+	}
+
+	.accordion .card .card-header button:before {
+    left: 30px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+	}
+
+	.accordion .card .card-body {
+	 	padding: 10px 30px 0px 70px;
+	}
+}
+
+

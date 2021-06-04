@@ -1,0 +1,82 @@
+/*****************************
+  Pricing Table
+*****************************/
+.pricing{
+  padding: 30px 40px;
+  background:$white;
+  border:1px solid $border-color;
+  border-radius:$border-radius; 
+
+  .pricing-price {
+    margin-bottom: 10px;
+    span {
+      font-size: 24px;
+      font-weight: 600;
+      color: $gray-8;
+    }
+  }
+
+  .pricing-list {
+    margin-bottom: 30px;
+    li {
+      padding-bottom: 20px;
+      color: $gray-3;
+      font-weight: 600;
+        i{
+          font-size: 12px;
+          min-width: 16px;
+          margin-right: 10px;
+          color: $primary;
+        }
+      &:last-child {
+        padding-bottom: 0;
+      }
+    }
+  }
+}
+
+.pricing.active{
+    box-shadow: 0 10px 20px rgba($gray-8, 0.1);
+  .pricing-price{
+    span{
+      color: $primary;
+    }
+  }
+}
+
+
+/* Responsive */
+
+@media (max-width:1199px) {
+
+  .pricing-table-content {
+      margin-right: 10px !important;
+      margin-left: 10px !important;
+  }
+  .pricing-prize h2 {
+      font-size: 62px;
+  }
+  .pricing-table-title{
+    flex: 0 0 18%;
+  }
+  
+}
+
+
+@media (max-width:991px) {
+  
+  .pricing{
+    padding: 30px 30px;
+  }
+  .pricing .btn{
+    padding: 14px 15px;
+  }
+  .pricing-section-title {
+      padding-top: 60px;
+      padding-bottom: 150px;
+  }
+}
+
+
+
+

@@ -1,0 +1,103 @@
+/*****************************
+  Counter
+*****************************/
+
+.counter {
+	padding: 40px; 
+	box-shadow: $box-shadow; 
+	text-align: center;
+	background-color:$white;
+	border-radius: $border-radius;
+	margin-bottom: 25px;
+	.counter-content{
+		.timer {
+			position: relative;
+			font-size: 48px;
+			font-weight: 600;
+			font-family: $font-hedding;
+			color: $gray-8;
+		}
+		label{
+			color: $gray-3;
+			font-size: 16px;
+			font-weight: 600;
+			display: block;
+		}
+	}
+	.counter-icon{
+		i{
+			font-size: 55px;
+			color: $primary;
+		}
+	}
+}
+
+
+.counter.counter-02{
+	box-shadow:inherit;
+	background-color:inherit;
+	padding: 0;
+	.counter-content{
+		.timer {
+			color: $white;
+		}
+		label{
+			color: $white;
+		}
+	}
+}
+
+.bg-dark{
+	.counter.counter-02{
+		box-shadow:inherit;
+		background-color:inherit;
+		padding: 0;
+		.counter-content{
+			.timer {
+				color: $white;
+			}
+			label{
+				color: $white;
+			}
+		}
+		
+	}
+}
+
+.bg-primary{
+	.counter.counter-02{
+		box-shadow:inherit;
+		background-color:inherit;
+		padding: 0;
+		.counter-content{
+			.timer {
+				color: $white;
+			}
+			label{
+				color: $white;
+			}
+		}
+		.counter-icon{
+			i{
+				color: $gray-8;
+			}
+		}
+	}
+}
+
+/* Responsive */
+
+@media (max-width:1199px) {
+
+	.counter {
+		padding: 30px;
+	}
+}
+
+
+@media (max-width:991px) {
+
+	.counter{
+		margin-bottom: 25px;
+	}
+}

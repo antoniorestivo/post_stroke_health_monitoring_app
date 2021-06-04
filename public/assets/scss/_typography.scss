@@ -1,0 +1,515 @@
+/*****************************
+  Typography
+*****************************/
+
+body {
+	font-family: $font-base;
+	font-weight: 400;
+	font-style: normal;
+	font-size: 14px;
+	color: $body-color;
+	overflow-x: hidden;
+}
+
+a {
+	outline: medium none !important;
+	color: $primary;
+	transition: all 0.3s ease-in-out;
+	&:focus {
+		color: $primary;
+		text-decoration: none !important;
+	}
+	&:hover {
+		color: $primary;
+		text-decoration: none !important;
+	}
+}
+
+input {
+	outline: medium none !important;
+	color: $primary;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: $font-hedding;
+	font-weight: normal;
+	color: $gray-8;
+	margin-top: 0px;
+	font-weight: 700;
+	a {
+		color: inherit;
+	}
+}
+
+label {
+	font-weight: normal;
+}
+
+h1 {
+	font-size: 42px;
+	font-style: normal;
+}
+
+h2 {
+	font-size: 36px;
+}
+
+h3 {
+	font-size: 30px;
+}
+
+h4 {
+	font-size: 24px;
+}
+
+h5 {
+	font-size: 20px;
+}
+
+h6 {
+	font-size: 18px;
+}
+
+p {
+	line-height: 1.8;
+}
+
+.lead {
+  font-weight: 400;
+  font-size: 18px;
+}
+
+*::-moz-selection {
+	background: $primary;
+	color: $white;
+	text-shadow: none;
+}
+
+::-moz-selection {
+	background: $primary;
+	color: $white;
+	text-shadow: none;
+}
+
+::selection {
+	background: $primary;
+	color: $white;
+	text-shadow: none;
+}
+
+/* container-fluid*/
+
+.container-fluid.container-space {
+	padding: 0 100px;
+}
+
+/* form-control */
+
+.form-control {
+	border: 1px solid $border-color;
+	border-radius: 0px;
+	height: 48px;
+	padding: 10px 20px;
+	box-shadow: none;
+	font-size: 14px;
+	font-weight: 500;
+	color: $gray-8;
+	border-radius: $border-radius;
+	background-clip: inherit !important;
+	&:focus {
+		box-shadow: none;
+		border-color: $primary;
+	}
+}
+
+.form-control::-moz-placeholder {
+	color: $gray-2;
+}
+
+.form-control::-ms-input-placeholder {
+	color: $gray-2;
+}
+
+.form-control::-webkit-input-placeholder {
+	color: $gray-2;
+}
+
+.custom-control, input[type=radio], .custom-control-label {
+	cursor: pointer;
+}
+
+.bootstrap-datetimepicker-widget.dropdown-menu.top{
+	z-index: 9;
+}
+
+.bootstrap-datetimepicker-widget table td.active, .bootstrap-datetimepicker-widget table td.active:hover {
+  color: $gray-8;
+  text-shadow: none;
+}
+
+.bootstrap-datetimepicker-widget table td.today:before {
+ 	border-bottom-color: $primary;
+}
+
+/* form-dark */
+.form-dark .form-control{
+	background-color: $gray-9;
+	color: $white;
+	&:focus {
+		box-shadow: $box-shadow;
+		border-color: $primary;
+	}
+}
+
+.form-dark .form-control::-moz-placeholder {
+	color: $white;
+}
+
+.form-dark .form-control::-ms-input-placeholder {
+	color: $white;
+}
+
+.form-dark .form-control::-webkit-input-placeholder {
+	color: $white;
+}
+
+/* custom-file */
+
+.custom-file {
+	height: 50px;
+	.custom-file-input {
+		height: 50px;
+		color: $gray-8;
+		border-radius: $border-radius;
+		border-color: $border-color;
+		&:focus {
+			box-shadow: none;
+			border-color: $primary;
+		}
+	}
+	.custom-file-label {
+		height: 50px;
+		font-size: 14px;
+		font-weight: 600;
+		color: $gray-8;
+		border-color: $border-color;
+		padding: 15px 90px 15px 20px;
+		border-radius: $border-radius;
+		&:after {
+			height: 48px;
+			padding: 14px 25px;
+		}
+	}
+}
+
+.custom-file-input:focus~.custom-file-label {
+	box-shadow: none;
+	border-color: $primary;
+}
+
+/* input-group-prepend */
+.input-group-prepend,
+.input-group-append {
+	.input-group-text {
+		background: transparent;
+		border-color: $border-color;
+		box-shadow: none;
+		justify-content: center;
+	}
+}
+
+/* checkbox */
+.custom-control-input {
+	&:checked~.custom-control-label {
+		&:before {
+			background: $primary;
+			border-color: $primary;
+		}
+	}
+	&:not(:disabled) {
+		&:active~.custom-control-label {
+			&:before {
+				background: transparent;
+				border-color: transparent;
+			}
+		}
+	}
+	&:focus~.custom-control-label {
+		&:before {
+			box-shadow: none;
+		}
+	}
+	&:focus {
+		&:not(:checked)~.custom-control-label {
+			&:before {
+				border-color: $border-color;
+			}
+		}
+	}
+}
+
+.custom-control-label {
+	&:before {
+		top: 2px;
+	}
+	&:after {
+		top: 2px;
+	}
+}
+
+.custom-checkbox {
+	.custom-control-label {
+		&:before {
+			border-radius: $border-radius;
+			border: 2px solid $gray-2;
+		}
+	}
+}
+
+.form-group{
+ .form-radio {
+		.custom-control-input {
+			&:checked~.custom-control-label {
+				&::after {
+					background: $gray-8;
+					border-color: $gray-8;
+					border-radius: 50%;
+				}
+			}
+		}
+  }
+}
+
+.list{
+  ul {
+    padding: 0;
+    margin: 0;
+    li{
+	    list-style: none;
+	    position: relative;
+	    padding-left: 25px;
+	    margin-bottom: 12px;
+	    i{
+	    	position: absolute;
+    		top: 4px;
+    		left: 0;
+    		font-size: 13px;
+	    }
+     	&:last-child {
+ 	    margin-bottom: 0;
+      }
+    }
+  }
+}
+
+
+/* border */
+
+.border {
+	border-color: $border-color !important;
+}
+
+.border-top {
+	border-top-color: $border-color !important;
+}
+
+.border-left {
+	border-left-color: $border-color !important;
+}
+
+.border-right {
+	border-right-color: $border-color !important;
+}
+
+.border-bottom {
+	border-bottom-color: $border-color !important;
+}
+
+/* badge */
+.badge {
+	border-radius: $border-radius;
+	+ {
+		.badge {
+			margin-left: 6px;
+		}
+	}
+}
+
+.badge-md {
+	padding: 5px 8px;
+	font-size: 13px;
+	font-weight: normal;
+}
+
+.badge-primary {
+	background: $primary;
+}
+
+/* breadcrumb */
+
+.breadcrumb {
+	padding-left: 0;
+	background: transparent;
+	font-family: $font-hedding;
+	font-weight: 500;
+	.breadcrumb-item {
+		color: $white;
+		a {
+			color: $white;
+			&:hover {
+				color: $primary;
+			}
+		}
+		&:before {
+			color: $white;
+		}
+	}
+	.active {
+		color: $primary;
+	}
+}
+
+/* pagination */
+
+.pagination {
+  display: inline-flex;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  padding: 10px 22px;
+	.page-item {
+		margin: 0 6px;
+		.active{
+			background: $primary;
+			border-radius: $border-radius;
+			color: $white !important;
+		}
+		.page-link {
+			padding: 14px 24px;
+			color: $gray-3;
+			border:none;
+			&:focus {
+				box-shadow: none;
+				background: $primary;
+				color: $white;
+				border-radius: $border-radius;
+			}
+			&:hover{
+				background: $primary;
+				color: $white;
+				border-radius: $border-radius;
+			}
+		}
+	}
+}
+
+/* table */
+.table-bordered {
+	td {
+		border-color: $border-color;
+	}
+	th {
+		border-color: $border-color;
+	}
+}
+
+.table {
+	thead {
+		th {
+			border-bottom-color: $border-color;
+		}
+	}
+}
+
+.table-striped {
+	tbody {
+		tr {
+			&:nth-of-type(odd) {
+				background: $gray-1;
+			}
+		}
+	}
+}
+.table td, .table th {
+	vertical-align: middle;
+}
+
+
+/* Responsive */
+
+@media (max-width:991px) {
+
+}
+
+@media (max-width:767px) {
+
+	h1 {
+		font-size: 32px;
+	}
+
+	h2 {
+		font-size: 28px;
+	}
+
+	h3 {
+		font-size: 24px;
+	}
+
+	h4 {
+		font-size: 20px;
+	}
+
+	h5 {
+		font-size: 18px;
+	}
+
+	h6 {
+		font-size: 17px;
+	}
+
+}
+
+
+@media (max-width:575px) {
+
+	h1 {
+		font-size: 30px;
+	}
+
+	h2 {
+		font-size: 26px;
+	}
+
+	h3 {
+		font-size: 24px;
+	}
+
+	.list{
+		margin-bottom: 12px;
+	}
+	
+	/* pagination */
+	.pagination .page-item {
+	  margin: 0 8px;
+	}
+	.pagination .page-item .page-link {
+    padding: 8px 10px;
+	}
+
+}
+
+@media (max-width:479px) {
+	
+	/* pagination */
+	.pagination {
+		padding: 5px;
+	}
+  .pagination .page-item {
+    margin: 0 3px;
+	}
+
+}
