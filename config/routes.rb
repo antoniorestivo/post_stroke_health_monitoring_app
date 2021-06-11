@@ -18,7 +18,9 @@ Rails.application.routes.draw do
     delete "/journals/:id" => "journals#destroy"
 
     post "/sessions" => "sessions#create"
-  end
 
+    
+  end
+  get "/*path" => proc { [200, {}, [ActionView::Base.new.render(file: "public/index.html")]] }
 
 end
