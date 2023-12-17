@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_26_211049) do
+ActiveRecord::Schema.define(version: 2023_12_07_235727) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,15 +27,28 @@ ActiveRecord::Schema.define(version: 2021_02_26_211049) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "health_metrics", force: :cascade do |t|
+    t.bigint "journal_template_id"
+    t.string "metric_name"
+    t.string "metric_data_type"
+    t.string "metric_unit_name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "journal_templates", force: :cascade do |t|
+    t.bigint "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "journals", force: :cascade do |t|
-    t.integer "user_id"
+    t.bigint "journal_template_id"
     t.text "description"
     t.string "image_url"
     t.string "video_url"
     t.text "health_routines"
-    t.string "bp_avg"
-    t.text "bp_annotations"
-    t.string "image_of_tongue"
+    t.jsonb "metrics"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -43,8 +56,14 @@ ActiveRecord::Schema.define(version: 2021_02_26_211049) do
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
+    t.string "first_name"
+    t.string "last_name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "conditions", "users"
+  add_foreign_key "health_metrics", "journal_templates"
+  add_foreign_key "journal_templates", "users"
+  add_foreign_key "journals", "journal_templates"
 end

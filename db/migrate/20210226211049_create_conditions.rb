@@ -11,5 +11,6 @@ class CreateConditions < ActiveRecord::Migration[6.0]
 
       t.timestamps
     end
+    add_foreign_key :conditions, :users
   end
 end
