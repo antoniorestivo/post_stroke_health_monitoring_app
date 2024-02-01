@@ -4,9 +4,7 @@
   image_url: journal.image_url,
   video_url: journal.video_url,
   health_routines: journal.health_routines,
-  bp_avg: journal.bp_avg,
-  bp_annotations: journal.bp_annotations,
-  image_of_tongue: journal.image_of_tongue,
+  health_metrics: journal.metrics.to_json,
   created_at: journal.created_at,
-  updated_at: journal.updated_at,
+  updated_at: journal.updated_at
 }

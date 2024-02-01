@@ -1,3 +1,3 @@
 class Journal < ApplicationRecord
-  belongs_to :user
+  belongs_to :journal_template
 end
