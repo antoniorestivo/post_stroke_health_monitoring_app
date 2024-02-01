@@ -1,9 +1,18 @@
 class Api::JournalsController < ApplicationController
   before_action :authenticate_user
   def index
-    @journals = current_user.journals
+    @template = current_user.journal_template
+    @journals = Array.wrap(@template&.journals)
+
     render "index.json.jb"
   end
+
+  def new
+    @journal_template = JournalTemplate.find_by(user: current_user)
+    @health_metrics = HealthMetric.where(journal_template: @journal_template)
+    render json: @health_metrics
+  end
+
   def show
     journal_id = params[:id]
     @journal = current_user.journals.find_by(id: journal_id)
@@ -13,19 +22,20 @@ class Api::JournalsController < ApplicationController
       render json: {errors: "Unauthorized"}, status: 422
     end
   end
+
   def create
+    Rails.logger.warn("Params: #{params.inspect}")
+    template = JournalTemplate.find_by(user: current_user)
     @journal = Journal.new(
-      user_id: current_user.id,
+      journal_template: template,
       description: params[:description],
       image_url: params[:image_url],
       video_url: params[:video_url],
       health_routines: params[:health_routines],
-      bp_avg: params[:bp_avg],
-      bp_annotations: params[:bp_annotations],
-      image_of_tongue: params[:image_of_tongue]
+      metrics: params[:metrics]
     )
     if @journal.save
-      render "show.json.jb"
+      redirect_to action: :index
     else
       render json: {errors: @journal.errors.full_messages}, status: 422
     end
