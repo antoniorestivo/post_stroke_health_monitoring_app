@@ -15,8 +15,8 @@ class Api::JournalsController < ApplicationController
 
   def show
     journal_id = params[:id]
-    @journal = current_user.journals.find_by(id: journal_id)
-    if @journal
+    @journal = Journal.find(journal_id)
+    if @journal.user == current_user
       render "show.json.jb"
     else
       render json: {errors: "Unauthorized"}, status: 422
@@ -49,10 +49,7 @@ class Api::JournalsController < ApplicationController
       @journal.image_url = params[:image_url] || @journal.image_url
       @journal.video_url = params[:video_url] || @journal.video_url
       @journal.health_routines = params[:health_routines] || @journal.health_routines
-      @journal.bp_avg = params[:bp_avg] || @journal.bp_avg
-      @journal.bp_annotations = params[:bp_annotations] || @journal.bp_annotations
-      @journal.image_of_tongue = params[:image_of_tongue] || @journal.image_of_tongue
-
+      @journal.metrics = params[:metrics] || @journal.metrics
       if @journal.save
         render "show.json.jb"
       else

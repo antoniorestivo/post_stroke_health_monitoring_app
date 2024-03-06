@@ -14,7 +14,13 @@ module Api
       end
     end
     def edit
-
+      template_id = params[:id]
+      @template = JournalTemplate.find(journal_id)
+      if @template.user == current_user
+        render "edit.json.jb"
+      else
+        render json: {errors: "Unauthorized"}, status: 422
+      end
     end
 
     def update
@@ -34,6 +40,9 @@ module Api
     def fields
       regex_pattern = /field_(name|unit|data_type)_\d/
       params[:template].keys.select { |k| k.match?(regex_pattern) }
+    end
+    def user_journal_template
+      @user_journal_template ||= current_user.journal_template
     end
   end
 end

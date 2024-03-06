@@ -4,7 +4,8 @@
   image_url: journal.image_url,
   video_url: journal.video_url,
   health_routines: journal.health_routines,
-  health_metrics: journal.metrics.to_json,
+  metrics: journal.metrics,
   created_at: journal.created_at,
-  updated_at: journal.updated_at
+  updated_at: journal.updated_at,
 }
+
