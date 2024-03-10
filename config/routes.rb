@@ -22,6 +22,4 @@ Rails.application.routes.draw do
     resources :journal_templates, only: %i(new create edit update)
 
   end
-  get "/*path" => proc { [200, {}, [ActionView::Base.new.render(file: "public/index.html")]] }
-
 end

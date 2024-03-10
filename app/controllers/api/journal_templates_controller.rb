@@ -1,7 +1,6 @@
 module Api
   class JournalTemplatesController < ApplicationController
     def new
-
     end
 
     def create
@@ -15,7 +14,7 @@ module Api
     end
     def edit
       template_id = params[:id]
-      @template = JournalTemplate.find(journal_id)
+      @template = JournalTemplate.find(template_id)
       if @template.user == current_user
         render "edit.json.jb"
       else
@@ -24,7 +23,6 @@ module Api
     end
 
     def update
-
     end
 
     private
