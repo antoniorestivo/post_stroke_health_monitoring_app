@@ -23,12 +23,23 @@ module Api
     end
 
     def update
+      template_id = params[:id]
+      @template = JournalTemplate.find(template_id)
+      @template.health_metrics.destroy_all
+      puts(permitted_params)
+      permitted_params["metrics"].each do |metric|
+        values = metric.slice("metric_name","metric_data_type","metric_unit_name","journal_template_id")
+        HealthMetric.create(values)
+      
+      end
     end
 
     private
 
     def permitted_params
-      @permitted_params ||= params.require(:template).permit(*fields)
+      @permitted_params ||= params.require(:template).permit(*fields, metrics: ["id","journal_template_id","metric_name","metric_data_type","metric_unit_name","created_at","updated_at"])
+
+      
     end
 
     def field_names
