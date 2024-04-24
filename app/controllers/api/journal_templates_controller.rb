@@ -26,11 +26,9 @@ module Api
       template_id = params[:id]
       @template = JournalTemplate.find(template_id)
       @template.health_metrics.destroy_all
-      puts(permitted_params)
       permitted_params["metrics"].each do |metric|
-        values = metric.slice("metric_name","metric_data_type","metric_unit_name","journal_template_id")
-        HealthMetric.create(values)
-      
+        values = metric.slice("metric_name","metric_data_type","metric_unit_name")
+        HealthMetric.create(journal_template_id: template_id, **values)
       end
     end
 
