@@ -1,0 +1,5 @@
+treatments = @treatments.map do |journal|
+  render partial: "treatment.json.jb", locals: { treatment: treatment }
+end
+
+render body: { treatments: treatments, template: @template }.to_json

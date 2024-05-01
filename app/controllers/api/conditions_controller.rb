@@ -19,8 +19,7 @@ class Api::ConditionsController < ApplicationController
     user_id: current_user.id,
     name: params[:name],
     support: params[:support],
-    treatment_retrospect: params[:treatment_retrospect],
-    treatment_plan: params[:treatment_plan],
+    description: params[:description],
     image_url: params[:image_url],
     video_url: params[:video_url]
   )
@@ -59,8 +58,5 @@ class Api::ConditionsController < ApplicationController
     else
       render json: {message: "Condition does not exist"}, status: 422
     end
-  
   end
-
-
 end

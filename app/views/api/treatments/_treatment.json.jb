@@ -1,0 +1,8 @@
+{
+  id: treatment.id,
+  condition_id: treatment.condition_id,
+  description: treatment.description,
+  created_at: treatment.created_at,
+  updated_at: treatment.updated_at
+}
+
