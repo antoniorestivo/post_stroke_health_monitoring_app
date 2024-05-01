@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_12_07_235727) do
+ActiveRecord::Schema.define(version: 2024_04_25_232946) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,8 +19,6 @@ ActiveRecord::Schema.define(version: 2023_12_07_235727) do
     t.integer "user_id"
     t.string "name"
     t.boolean "support"
-    t.text "treatment_retrospect"
-    t.string "treatment_plan"
     t.string "image_url"
     t.string "video_url"
     t.datetime "created_at", precision: 6, null: false
@@ -53,6 +51,21 @@ ActiveRecord::Schema.define(version: 2023_12_07_235727) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "treatment_retrospects", force: :cascade do |t|
+    t.bigint "treatment_id"
+    t.integer "rating"
+    t.text "feedback"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "treatments", force: :cascade do |t|
+    t.bigint "condition_id"
+    t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
@@ -66,4 +79,6 @@ ActiveRecord::Schema.define(version: 2023_12_07_235727) do
   add_foreign_key "health_metrics", "journal_templates"
   add_foreign_key "journal_templates", "users"
   add_foreign_key "journals", "journal_templates"
+  add_foreign_key "treatment_retrospects", "treatments"
+  add_foreign_key "treatments", "conditions"
 end
