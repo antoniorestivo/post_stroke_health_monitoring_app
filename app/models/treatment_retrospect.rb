@@ -1,0 +1,2 @@
+class TreatmentRetrospect < ApplicationRecord
+end
