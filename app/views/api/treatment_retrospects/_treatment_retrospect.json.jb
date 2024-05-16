@@ -1,0 +1,9 @@
+{
+  id: treatment_retrospect.id,
+  treatment_id: treatment_retrospect.treatment_id,
+  feedback: treatment_retrospect.feedback,
+  rating: treatment_retrospect.rating,
+  created_at: treatment_retrospect.created_at,
+  updated_at: treatment_retrospect.updated_at
+}
+

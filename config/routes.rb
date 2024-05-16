@@ -6,7 +6,9 @@ Rails.application.routes.draw do
     delete "/users/:id" => "users#destroy"
 
     resources :conditions do
-      resources :treatments
+      resources :treatments do
+        resources :treatment_retrospects
+      end
     end
     delete "/conditions/:id" => "conditions#destroy"
 
