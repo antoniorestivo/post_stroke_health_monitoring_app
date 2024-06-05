@@ -1,6 +1,4 @@
 class Journal < ApplicationRecord
   belongs_to :journal_template
-  def user
-    journal_template.user
-  end
+  has_one :user, through: :journal_template
 end

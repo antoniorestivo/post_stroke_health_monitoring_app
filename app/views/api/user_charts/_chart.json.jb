@@ -1,0 +1,10 @@
+{
+  id: chart.id,
+  title: chart.title,
+  chart_type: chart.chart_type,
+  x_label: chart.x_label,
+  y_label: chart.y_label,
+  created_at: chart.created_at,
+  updated_at: chart.updated_at,
+  data: data
+}

@@ -1,0 +1,5 @@
+charts = @charts.map do |chart|
+  render partial: "chart.json.jb", locals: { chart: chart, data: {} }
+end
+
+render body: { charts: charts }.to_json

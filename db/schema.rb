@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_05_01_001955) do
+ActiveRecord::Schema.define(version: 2024_05_22_004525) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,6 +67,17 @@ ActiveRecord::Schema.define(version: 2024_05_01_001955) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "user_charts", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "title"
+    t.string "chart_type"
+    t.string "x_label"
+    t.string "y_label"
+    t.jsonb "options"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
@@ -82,4 +93,5 @@ ActiveRecord::Schema.define(version: 2024_05_01_001955) do
   add_foreign_key "journals", "journal_templates"
   add_foreign_key "treatment_retrospects", "treatments"
   add_foreign_key "treatments", "conditions"
+  add_foreign_key "user_charts", "users"
 end
