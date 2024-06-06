@@ -9,7 +9,14 @@ module Api
       @chart = UserChart.find(params[:id])
       y_variable = @chart.y_label
       journals = current_user.journals.order(created_at: :asc)
-      x_data = journals.map { |j| j.created_at.strftime('%m-%d-%Y') }
+      x_label = @chart.x_label
+      x_data = begin
+                 if x_label == 'Time'
+                   journals.map { |j| j.created_at.strftime('%m-%d-%Y') }
+                 else
+                   journals.map { |j| j.metrics[x_label] }
+                 end
+               end
       y_data = journals.map { |j| j.metrics[y_variable] }
       @data = { x: x_data, y: y_data }
     end
@@ -23,10 +30,19 @@ module Api
       UserChart.create_with_implicit_type(permitted_params)
     end
 
+    def edit
+      chart = UserChart.find(params[:id])
+      health_metrics = current_user.health_metrics.select(:metric_name)
+      @data = { chart: chart, health_metrics: health_metrics }
+      render json: @data
+    end
+
     def update
+      UserChart.find(params[:id]).update(permitted_params)
     end
 
     def destroy
+      UserChart.find(params[:id]).destroy
     end
 
     private
