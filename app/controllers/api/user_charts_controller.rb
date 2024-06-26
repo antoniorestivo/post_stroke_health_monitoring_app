@@ -7,18 +7,8 @@ module Api
 
     def show
       @chart = UserChart.find(params[:id])
-      y_variable = @chart.y_label
       journals = current_user.journals.order(created_at: :asc)
-      x_label = @chart.x_label
-      x_data = begin
-                 if x_label == 'Time'
-                   journals.map { |j| j.created_at.strftime('%m-%d-%Y') }
-                 else
-                   journals.map { |j| j.metrics[x_label] }
-                 end
-               end
-      y_data = journals.map { |j| j.metrics[y_variable] }
-      @data = { x: x_data, y: y_data }
+      @data = ::UserCharts::Enrich.new(@chart, journals).data
     end
 
     def new

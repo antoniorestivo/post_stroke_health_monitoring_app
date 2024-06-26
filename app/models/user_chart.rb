@@ -4,6 +4,8 @@ class UserChart < ApplicationRecord
   def self.create_with_implicit_type(params)
     if params['x_label'] == 'Time'
       chart_type = 'line'
+    elsif params['y_label'] == 'Frequency / Count'
+      chart_type = 'bar'
     else
       chart_type = 'scatter'
     end
@@ -13,6 +15,8 @@ class UserChart < ApplicationRecord
   def self.update_with_implicit_type(params)
     if params['x_label'] == 'Time'
       chart_type = 'line'
+    elsif params['y_label'] == 'Frequency / Count'
+      chart_type = 'bar'
     else
       chart_type = 'scatter'
     end
