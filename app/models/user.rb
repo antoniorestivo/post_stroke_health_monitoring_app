@@ -5,6 +5,7 @@ class User < ApplicationRecord
   has_many :journals, through: :journal_template
   has_many :user_charts
   has_many :health_metrics, through: :journal_template
+  has_many :treatments, through: :conditions
 
   validates :email, presence: true, uniqueness: true
 

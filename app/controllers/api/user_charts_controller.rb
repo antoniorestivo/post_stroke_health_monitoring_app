@@ -12,8 +12,9 @@ module Api
     end
 
     def new
-      @health_metrics = current_user.health_metrics.select(:metric_name)
-      render json: @health_metrics
+      @health_metrics = current_user.health_metrics
+      @treatments = current_user.treatments
+      render json: { metrics: @health_metrics, treatments: @treatments }
     end
 
     def create
@@ -38,7 +39,7 @@ module Api
     private
 
     def permitted_params
-      params.permit(:x_label, :y_label, :user_id, :title)
+      params.permit(:x_label, :y_label, :user_id, :title, options: {})
     end
   end
 end

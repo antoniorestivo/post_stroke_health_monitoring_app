@@ -8,7 +8,17 @@ module UserCharts
     end
 
     def data
-      { x: refined_x_data, y: refined_y_data }
+      if chart_type == 'boxplot'
+        handle_boxplot
+      else
+        { x: refined_x_data, y: refined_y_data, thresholds: find_warning_thresholds }
+      end
+    end
+
+    def handle_boxplot
+      treatment_ids = user_chart.options['treatmentIds']
+      retrospects = TreatmentRetrospect.where(treatment_id: treatment_ids).order(treatment_id: :asc)
+      UserCharts::TreatmentComparisons::Construct.new(user_chart, retrospects).shaped_data
     end
 
     def refined_x_data
@@ -59,6 +69,26 @@ module UserCharts
 
     def chart_type
       @chart_type ||= user_chart.chart_type
+    end
+
+    def health_metrics
+      @health_metrics ||= user_chart.health_metrics
+    end
+
+    def metric_names
+      @metric_names ||= health_metrics.pluck(:metric_name)
+    end
+
+    def x_metric
+      @x_metric ||= health_metrics.find_by(metric_name: user_chart.x_label)
+    end
+
+    def y_metric
+      @y_metric ||= health_metrics.find_by(metric_name: user_chart.y_label)
+    end
+
+    def find_warning_thresholds
+      { x: x_metric&.warning_threshold, y: y_metric&.warning_threshold }
     end
   end
 end

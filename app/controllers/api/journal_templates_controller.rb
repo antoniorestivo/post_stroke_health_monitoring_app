@@ -9,7 +9,9 @@ module Api
         id = field_name.scan(/\d+/).first
         field_unit = permitted_params["field_unit_#{id}"]
         field_data_type = permitted_params["field_data_type_#{id}"]
-        HealthMetric.create(journal_template: journal_template, metric_name: v, metric_data_type: field_data_type, metric_unit_name: field_unit)
+        warning_threshold = permitted_params['warning_threshold']
+        HealthMetric.create(journal_template: journal_template, metric_name: v, metric_data_type: field_data_type,
+                            metric_unit_name: field_unit, warning_threshold: warning_threshold)
       end
     end
     def edit
@@ -27,7 +29,7 @@ module Api
       @template = JournalTemplate.find(template_id)
       @template.health_metrics.destroy_all
       permitted_params["metrics"].each do |metric|
-        values = metric.slice("metric_name","metric_data_type","metric_unit_name")
+        values = metric.slice("metric_name","metric_data_type","metric_unit_name", "warning_threshold")
         HealthMetric.create(journal_template_id: template_id, **values)
       end
     end
@@ -35,7 +37,10 @@ module Api
     private
 
     def permitted_params
-      @permitted_params ||= params.require(:template).permit(*fields, metrics: ["id","journal_template_id","metric_name","metric_data_type","metric_unit_name","created_at","updated_at"])
+      @permitted_params ||= params.require(:template).permit(*fields, metrics: ["id","journal_template_id",
+                                                                                "metric_name","metric_data_type",
+                                                                                "metric_unit_name","created_at",
+                                                                                "updated_at", "warning_threshold"])
 
       
     end
