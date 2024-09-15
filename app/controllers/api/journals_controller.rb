@@ -3,6 +3,7 @@ class Api::JournalsController < ApplicationController
   def index
     @template = current_user.journal_template
     @journals = Array.wrap(@template&.journals)
+    @enriched_metrics = Journals::EnrichMetrics.new(@journals, @template).with_units
 
     render "index.json.jb"
   end

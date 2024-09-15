@@ -2,6 +2,9 @@ class Api::SessionsController < ApplicationController
   def create
     Rails.logger.warn('LOGGING IN!!!!!!!!!!!')
     user = User.find_by(email: params[:email])
+
+    UserLogin.create(user: user)
+
     Rails.logger.warn(user.email)
     if user && user.authenticate(params[:password])
       jwt = JWT.encode(

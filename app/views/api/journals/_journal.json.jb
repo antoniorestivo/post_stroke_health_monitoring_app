@@ -5,6 +5,7 @@
   video_url: journal.video_url,
   health_routines: journal.health_routines,
   metrics: journal.metrics,
+  enriched_metrics: enriched_metrics,
   created_at: journal.created_at,
   updated_at: journal.updated_at,
 }

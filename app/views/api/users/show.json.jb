@@ -1,1 +1,2 @@
-render partial: 'user.json.jb', locals: {user: @user}
+render partial: 'user.json.jb', locals: { user: @user, monthly_statistics: @monthly_statistics,
+                                          daily_statistics: @daily_statistics, profile_image_url: @profile_image_url }

@@ -5,7 +5,10 @@ class Api::UsersController < ApplicationController
     @user = User.new(
       email: params[:email],
       password: params[:password],
-      password_confirmation: params[:password_confirmation]
+      password_confirmation: params[:password_confirmation],
+      first_name: params[:first_name],
+      last_name: params[:last_name],
+      profile_image: params[:profile_image]
     )
     if @user.save
       render "show.json.jb"
@@ -16,27 +19,41 @@ class Api::UsersController < ApplicationController
 
   def show
     @user = current_user
+    @monthly_statistics = current_user.usage_statistics.to_h
+                                      .with_indifferent_access
+                                      .fetch(:months, {})
+                                      .each_with_object({}) do |(k, v), memo|
+      memo[:labels] ||= []
+      memo[:labels].push(k.to_s.capitalize)
+      memo[:logins] ||= []
+      memo[:logins].push(v)
+    end
+    begin_date_dimension_id = Time.now.utc.to_date.advance(days: -6).strftime('%Y%m%d').to_i
+    logins = UserLogin.where("date_dimension_id > ?", begin_date_dimension_id).group(:date_dimension_id).count
+    dates = (0..6).map { |i| (Time.now.utc.to_date - i).strftime('%Y%m%d') }.reverse
+    @daily_statistics = dates.each_with_object({}) do |date_dimension_id, memo|
+      memo[:labels] ||= []
+      memo[:labels].push(date_dimension_id)
+      memo[:logins] ||= []
+      memo[:logins].push(logins.fetch(date_dimension_id.to_i, 0))
+    end
+    @profile_image_url = url_for(@user.profile_image) if @user.profile_image&.attached?
     render "show.json.jb"
   end
  
   def update
-    #update users
-  
+    # fields = permitted_params.to_h.compact
     @user = current_user
-    @user.email = params[:email] || @user.email
-    if params[:password]
-      if @user.authenticate(params[:old_password])
-        @user.update!(
-          password: params[:password],
-          password_confirmation: params[:password_confirmation]
-        ) 
-      end
-    end
-    if @user.save
+    @user.profile_image.attach(permitted_params[:profile_image])
+    if @user.save!
       render "show.json.jb", status: 200
-    else  
+    else
       render json: {errors: @user.errors.full_messages}, status: 422
     end
+  end
+
+  def permitted_params
+    params.permit(:first_name, :last_name, :email, :password, :old_password, :password_confirmation, :profile_image)
   end
 
   def destroy
