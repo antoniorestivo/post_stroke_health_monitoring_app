@@ -1,8 +1,11 @@
 class Api::JournalsController < ApplicationController
   before_action :authenticate_user
   def index
+    limit = params[:limit] || 9
+    offset = params[:offset] || 0
     @template = current_user.journal_template
-    @journals = Array.wrap(@template&.journals)
+    @journals = Journal.where(journal_template: @template).where.not(metrics: nil).limit(limit).offset(offset)
+    @total_records = Journal.where(journal_template: @template).where.not(metrics: nil).count
     @enriched_metrics = Journals::EnrichMetrics.new(@journals, @template).with_units
 
     render "index.json.jb"

@@ -20,7 +20,7 @@ module Journals
     end
 
     def journal_metrics
-      journals.pluck(:id, :metrics).to_h
+      journals.pluck(:id, :metrics).to_h.compact
     end
 
     def metrics
