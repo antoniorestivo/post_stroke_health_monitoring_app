@@ -6,41 +6,34 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-user = User.new({email: "person1@icecream.com", password: "password"})
-user.save
+user = User.create(email: 'joe@aol.com', first_name: 'Joe', last_name: 'Young', password: 'abc123')
+journal_template = JournalTemplate.create(user: user)
+HealthMetric.create(journal_template: journal_template, metric_name: 'Depression Score', metric_data_type: "integer",
+                    metric_unit_name: "scale", warning_threshold: 5)
+HealthMetric.create(journal_template: journal_template, metric_name: 'Systolic Blood Pressure', metric_data_type: "string",
+                    metric_unit_name: "mm/Hg", warning_threshold: 130)
+HealthMetric.create(journal_template: journal_template, metric_name: 'Diastolic Blood Pressure', metric_data_type: "string",
+                    metric_unit_name: "mm/Hg", warning_threshold: 100)
+HealthMetric.create(journal_template: journal_template, metric_name: 'Weight', metric_data_type: "decimal",
+                    metric_unit_name: "pounds (lb)", warning_threshold: 210)
 
-journal = Journal.new({user_id: 1, description: "Patient is overly angry today which is driving blood pressure", image_url: "img url", video_url: "video url", health_routines: "Weight lifting.Alot of spicy foods.", bp_avg: "150/90", bp_annotations: "Perhaps the bp comes from too much weigh lifting and spicy food.", image_of_tongue: "tongue image url"})
-journal.save
+10.times do |x|
+  Journal.create(journal_template: journal_template, metrics: {"Weight"=>"196", "Depression score"=>"3",
+                                              "systolic blood pressure"=>"115", "diastolic blood pressure"=>"78"},
+                 created_at: x.days.ago)
+end
 
-journal = Journal.new({user_id: 1, description: "Can't walk or talk fluently due to ataxia. Much calmer than yesterday and not overly angry", image_url: "img url", video_url: "video url", health_routines: "Light on the elliptical track. No spicy foods.", bp_avg: "130/ 85", bp_annotations: "Much calmer but with some strong activity- but not overly strong.", image_of_tongue: "tongue image url"})
-journal.save
+condition1 = Condition.create(user: user, name: "Kangaroo flu", support: true, created_at: 10.days.ago)
 
-condition = Condition.new({user_id: 1, name: "dropped elbow", support: 0, treatment_retrospect: "Do have a treatment plan that needs to be done.", treatment_plan: "10 minutes gently of plum needle technique on good arm and 20 minutes more strongly on bad arm.", image_url: "img url", video_url: "video url"})
-condition.save
+treatment1 = Treatment.create(condition: condition1, description: "Drink apple cider vinegar twice per day",
+                              created_at: 10.days.ago)
 
-condition = Condition.new({user_id: 1, name: "ataxia", support: 0, treatment_retrospect: "Past treatment plan has not been overly effective. Patient finds that some treatments are overbearing. Though it could need to take time for it to work.  May need to try facial acupressure treatment to help connect ren and du meridian.", treatment_plan: "10 minutes moxa treatment on K1 acupressure point on foot. 20 minutes strong acupressure on toes. Microcosmic orbit ear massage every night. Add facial + energy massage for 20 minutes.", image_url: "img url", video_url: "video url"})
-condition.save
-
-
-
-user = User.new({email: "person2@icecream.com", password: "password"})
-user.save
-
-
-
-journal = Journal.new({user_id: 2, description: "Eye diagnosis and blood test still says anemic from some time ago.", image_url: "img url", video_url: "video url", health_routines: "Nothing but bananas.", bp_avg: "110/69", bp_annotations: "Could be from the excess fatigue and bed riddeness.", image_of_tongue: "tongue image url"})
-journal.save
-
-journal = Journal.new({user_id: 2, description: "Patient is more energetic than yesterday relatively speaking", image_url: "img url", video_url: "video url", health_routines: "More miso soup.", bp_avg: "120/75", bp_annotations: "Better than yesterday.", image_of_tongue: "tongue image url"})
-journal.save
+10.times do |x|
+  TreatmentRetrospect.create(treatment: treatment1, rating: (rand(10) + 1), feedback: 'Meh', created_at: x.days.ago)
+end
 
 
 
-condition = Condition.new({user_id: 2, name: "anemia", support: 0, treatment_retrospect: "Need to follow through with current treatment plan", treatment_plan: "A bunch of beets", image_url: "img url", video_url: "video url"})
-condition.save
-
-condition = Condition.new({user_id: 2, name: "fatigue", support: 0, treatment_retrospect: "Need to follow through with current treatment plan", treatment_plan: "More beets and exercise.", image_url: "img url", video_url: "video url"})
-condition.save
 
 
 
