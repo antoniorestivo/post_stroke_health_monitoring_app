@@ -1,0 +1,7 @@
+{
+  id: condition_treatments.id,
+  name: condition_treatments.name,
+  support: condition_treatments.support,
+  description: condition_treatments.description,
+  treatments: condition_treatments.treatments
+}

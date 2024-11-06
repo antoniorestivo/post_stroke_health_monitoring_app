@@ -10,8 +10,4 @@ class User < ApplicationRecord
   has_one_attached :profile_image
 
   validates :email, presence: true, uniqueness: true
-
-  def journals
-    journal_template&.journals
-  end
 end

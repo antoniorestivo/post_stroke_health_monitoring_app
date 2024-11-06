@@ -15,6 +15,8 @@ module Journals
       end
     end
 
+    private
+
     def measure_with_unit(key, value)
       "#{value} #{metrics_with_names[key]}"
     end

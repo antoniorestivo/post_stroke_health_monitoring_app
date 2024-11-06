@@ -15,10 +15,12 @@ module UserCharts
       end
     end
 
+    private
+
     def handle_boxplot
       treatment_ids = user_chart.options['treatmentIds']
       retrospects = TreatmentRetrospect.where(treatment_id: treatment_ids).order(treatment_id: :asc)
-      UserCharts::TreatmentComparisons::Construct.new(user_chart, retrospects).shaped_data
+      UserCharts::TreatmentComparisons::Construct.build(user_chart, retrospects)
     end
 
     def refined_x_data

@@ -3,6 +3,10 @@ module UserCharts
     class Construct
       attr_reader :user_chart, :retrospects
 
+      def self.build(user_chart, retrospects)
+        new(user_chart, retrospects).shaped_data
+      end
+
       def initialize(user_chart, retrospects)
         @user_chart = user_chart
         @retrospects = retrospects
@@ -11,6 +15,8 @@ module UserCharts
       def shaped_data
         { labels: labels, datasets: datasets }
       end
+
+      private
 
       def labels
         treatment_ids = data.keys

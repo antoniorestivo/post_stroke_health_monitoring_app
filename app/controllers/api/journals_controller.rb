@@ -19,8 +19,10 @@ class Api::JournalsController < ApplicationController
 
   def show
     journal_id = params[:id]
-    @journal = Journal.find(journal_id)
-    if @journal.user == current_user
+    @journals = Journal.where(id: journal_id)
+    @template = current_user.journal_template
+    @enriched_metrics = Journals::EnrichMetrics.new(@journals, @template).with_units
+    if @journals.first.user == current_user
       render "show.json.jb"
     else
       render json: {errors: "Unauthorized"}, status: 422

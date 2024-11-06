@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     post "/journals" => "journals#create"
     patch "/journals/:id" => "journals#update"
     delete "/journals/:id" => "journals#destroy"
+    get "treatments/all" => "treatments#all"
 
     post "/sessions" => "sessions#create"
     resources :journal_templates, only: %i(new create edit update)

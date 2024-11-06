@@ -3,9 +3,13 @@ module Api
     before_action :authenticate_user
 
     def index
+      limit = params[:limit] || 9
+      offset = params[:offset] || 0
       @treatment_retrospects = TreatmentRetrospect.where(treatment_id: params[:treatment_id])
+                                                  .limit(limit)
+                                                  .offset(offset)
+      @total_records = TreatmentRetrospect.where(treatment_id: params[:treatment_id]).count
     end
-
     def show
       @treatment_retrospect = TreatmentRetrospect.find(params[:id])
     end

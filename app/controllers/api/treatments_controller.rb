@@ -1,8 +1,13 @@
 module Api
   class TreatmentsController < ApplicationController
-    before_action :authenticate_user, :validate_user_condition
+    before_action :authenticate_user
+    before_action :validate_user_condition, except: :all
     def index
       @treatments = Treatment.where(condition_id: params[:condition_id])
+    end
+
+    def all
+      @relation = current_user.conditions.includes(:treatments)
     end
 
     def show
