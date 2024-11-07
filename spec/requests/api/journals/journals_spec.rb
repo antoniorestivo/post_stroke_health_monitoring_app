@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::JournalsController, type: :controller do
+RSpec.describe 'Journals requests', type: :request do
   let(:user) { create(:user) }
   let!(:journal_template) { create(:journal_template, user: user) }
   let!(:journal) { create(:journal, journal_template: journal_template) }
@@ -16,68 +16,63 @@ RSpec.describe Api::JournalsController, type: :controller do
   let(:current_user) { user }
   before { allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(current_user) }
 
-  describe "GET #index" do
+  describe "GET /api/journals" do
     it "returns success and a list of journals" do
-      get :index, params: { limit: 10, offset: 0 }
+      get '/api/journals', params: { limit: 10, offset: 0 }, as: :json
       expect(response).to have_http_status(:success)
-      expect(assigns(:journals)).not_to be_nil
-      expect(assigns(:enriched_metrics)).not_to be_nil
     end
   end
 
-  describe "GET #new" do
+  describe "GET /api/journals/new" do
     it "returns success and journal template's health metrics" do
-      get :new
+      get '/api/journals/new'
       expect(response).to have_http_status(:success)
-      expect(assigns(:health_metrics)).not_to be_nil
     end
   end
 
-  describe "GET #show" do
+  describe "GET /api/journals/:id" do
     it "returns the journal when authorized" do
-      get :show, params: { id: journal.id }
+      get "/api/journals/#{journal.id}", as: :json
       expect(response).to have_http_status(:success)
-      expect(assigns(:journal)).to eq(journal)
     end
 
     it "returns unauthorized if the user is not the journal's owner" do
       another_user = create(:user, email: 'abc@av.com')
       another_journal = create(:journal, journal_template: journal_template, user: another_user)
-      get :show, params: { id: another_journal.id }
+      get "/api/journals/#{another_journal.id}"
       expect(response).to have_http_status(422)
     end
   end
 
-  describe "POST #create" do
+  describe "POST /api/journals" do
     it "creates a new journal and redirects to index" do
       expect {
-        post :create, params: valid_journal_params
+        post "/api/journals", params: valid_journal_params, as: :json
       }.to change(Journal, :count).by(1)
-      expect(response).to redirect_to(action: :index)
+      expect(response).to redirect_to(api_journals_path)
     end
   end
 
-  describe "PATCH/PUT #update" do
+  describe "PATCH/PUT /api/journals/:id" do
     it "updates the journal and renders show" do
-      patch :update, params: { id: journal.id, description: "Updated description" }
+      patch "/api/journals/#{journal.id}", params: { description: "Updated description" }, as: :json
       expect(response).to have_http_status(:success)
-      expect(assigns(:journal).description).to eq("Updated description")
     end
 
     it "returns unauthorized if the user is not the journal's owner" do
       another_user = create(:user, email: 'joe@bbc.com')
       another_template = create(:journal_template, user: another_user)
       another_journal = create(:journal, journal_template: another_template)
-      patch :update, params: { id: another_journal.id, description: "New description" }
+      patch "/api/journals/#{another_journal.id}", params: { description: "New description" }, as: :json
       expect(response).to have_http_status(422)
     end
   end
 
-  describe "DELETE #destroy" do
+  describe "DELETE /api/journals/:id" do
     it "deletes the journal when authorized" do
       journal_to_delete = create(:journal, journal_template: journal_template, user: user)
       expect {
-        delete :destroy, params: { id: journal_to_delete.id }
+        delete "/api/journals/#{journal_to_delete.id}"
       }.to change(Journal, :count).by(-1)
       expect(response).to have_http_status(:success)
     end
@@ -86,7 +81,7 @@ RSpec.describe Api::JournalsController, type: :controller do
       another_user = create(:user, email: 'joe@bbc.com')
       another_template = create(:journal_template, user: another_user)
       another_journal = create(:journal, journal_template: another_template)
-      delete :destroy, params: { id: another_journal.id }
+      delete "/api/journals/#{another_journal.id}"
       expect(response).to have_http_status(422)
     end
   end

@@ -1,3 +1,3 @@
 @conditions.map do |condition|
-  render partial: "condition.json.jb", locals: { condition: condition}
+  render partial: "condition", locals: { condition: condition}
 end

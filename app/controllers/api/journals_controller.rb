@@ -7,8 +7,6 @@ class Api::JournalsController < ApplicationController
     @journals = Journal.where(journal_template: @template).where.not(metrics: nil).limit(limit).offset(offset)
     @total_records = Journal.where(journal_template: @template).where.not(metrics: nil).count
     @enriched_metrics = Journals::EnrichMetrics.new(@journals, @template).with_units
-
-    render "index.json.jb"
   end
 
   def new
@@ -19,11 +17,12 @@ class Api::JournalsController < ApplicationController
 
   def show
     journal_id = params[:id]
+    @journal = Journal.find(journal_id)
     @journals = Journal.where(id: journal_id)
     @template = current_user.journal_template
     @enriched_metrics = Journals::EnrichMetrics.new(@journals, @template).with_units
     if @journals.first.user == current_user
-      render "show.json.jb"
+      render "show"
     else
       render json: {errors: "Unauthorized"}, status: 422
     end
@@ -57,7 +56,7 @@ class Api::JournalsController < ApplicationController
       @journal.health_routines = params[:health_routines] || @journal.health_routines
       @journal.metrics = params[:metrics] || @journal.metrics
       if @journal.save
-        render "show.json.jb"
+        render "show"
       else
         render json: {errors: @recipe.errors.full_messages}, status: 422
       end

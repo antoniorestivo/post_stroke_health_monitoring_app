@@ -18,7 +18,7 @@ module Api
       template_id = params[:id]
       @template = JournalTemplate.find(template_id)
       if @template.user == current_user
-        render "edit.json.jb"
+        render "edit"
       else
         render json: {errors: "Unauthorized"}, status: 422
       end

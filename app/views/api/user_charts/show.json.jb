@@ -1,1 +1,1 @@
-render partial: "chart.json.jb", locals: { chart: @chart, data: @data }
+render partial: "chart", locals: { chart: @chart, data: @data }

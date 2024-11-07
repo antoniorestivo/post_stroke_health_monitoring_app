@@ -3,13 +3,13 @@ class Api::ConditionsController < ApplicationController
   
   def index
     @conditions = current_user.conditions
-    render "index.json.jb"
+    render "index"
   end
   def show
     condition_id = params[:id]
     @condition = current_user.conditions.find_by(id: condition_id)
     if @condition
-      render "show.json.jb"
+      render "show"
     else
       render json: {errors: "Unauthorized"}, status: 422
     end
@@ -24,7 +24,7 @@ class Api::ConditionsController < ApplicationController
     video_url: params[:video_url]
   )
     if @condition.save
-      render "show.json.jb"
+      render "show"
     else
       render json: {errors: @condition.errors.full_messages}, status: 422
     end
@@ -41,7 +41,7 @@ class Api::ConditionsController < ApplicationController
       @condition.video_url = params[:video_url] || @condition.video_url
     
       if @condition.save
-        render "show.json.jb"
+        render "show"
       else
         render json: {errors: @condition.error.full_messages}, status: 422
       end

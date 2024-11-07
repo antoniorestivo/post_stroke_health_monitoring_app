@@ -1,5 +1,5 @@
 conditions_treatments = @relation.map do |condition_treatments|
-  render partial: "condition_treatments.json.jb", locals: { condition_treatments: condition_treatments }
+  render partial: "condition_treatments", locals: { condition_treatments: condition_treatments }
 end
 
 render body: { condition_treatments: conditions_treatments }.to_json

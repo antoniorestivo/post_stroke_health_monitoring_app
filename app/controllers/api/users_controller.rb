@@ -11,7 +11,7 @@ class Api::UsersController < ApplicationController
       profile_image: params[:profile_image]
     )
     if @user.save
-      render "show.json.jb"
+      render "show"
     else
       render json: { errors: @user.errors.full_messages }, status: :bad_request
     end
@@ -38,7 +38,7 @@ class Api::UsersController < ApplicationController
       memo[:logins].push(logins.fetch(date_dimension_id.to_i, 0))
     end
     @profile_image_url = url_for(@user.profile_image) if @user.profile_image&.attached?
-    render "show.json.jb"
+    render "show"
   end
  
   def update
@@ -46,7 +46,7 @@ class Api::UsersController < ApplicationController
     @user = current_user
     @user.profile_image.attach(permitted_params[:profile_image])
     if @user.save!
-      render "show.json.jb", status: 200
+      render "show", status: 200
     else
       render json: {errors: @user.errors.full_messages}, status: 422
     end

@@ -1,1 +1,1 @@
-render partial: "treatment_retrospect.json.jb", locals: { treatment_retrospect: @treatment_retrospect }
+render partial: "treatment_retrospect", locals: { treatment_retrospect: @treatment_retrospect }

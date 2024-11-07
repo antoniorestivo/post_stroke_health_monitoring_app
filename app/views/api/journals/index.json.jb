@@ -1,6 +1,6 @@
 journals = @journals.map do |journal|
   e_metrics = @enriched_metrics[journal.id]
-  render partial: "journal.json.jb", locals: { journal: journal, enriched_metrics: e_metrics}
+  render partial: "journal", locals: { journal: journal, enriched_metrics: e_metrics}
 end
 
 render body: { journals: journals, template: @template, total_records: @total_records }.to_json

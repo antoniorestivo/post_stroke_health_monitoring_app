@@ -1,1 +1,1 @@
-render partial: "journal.json.jb", locals: { journal: @journals.first, enriched_metrics: @enriched_metrics }
+render partial: "journal", locals: { journal: @journal, enriched_metrics: @enriched_metrics }
