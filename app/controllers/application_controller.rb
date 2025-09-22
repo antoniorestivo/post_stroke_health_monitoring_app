@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, if: -> { request.format.html? }
+  skip_before_action :verify_authenticity_token, if: -> { Rails.env.development? }
 
   def current_user
     auth_headers = request.headers["Authorization"]

@@ -1,5 +1,5 @@
 class Api::UsersController < ApplicationController
-  
+
   before_action :authenticate_user, except: [:create]
   def create
     @user = User.new(
@@ -11,7 +11,7 @@ class Api::UsersController < ApplicationController
       profile_image: params[:profile_image]
     )
     if @user.save
-      render "show"
+      render "show", formats: [:json]
     else
       render json: { errors: @user.errors.full_messages }, status: :bad_request
     end
@@ -38,15 +38,17 @@ class Api::UsersController < ApplicationController
       memo[:logins].push(logins.fetch(date_dimension_id.to_i, 0))
     end
     @profile_image_url = url_for(@user.profile_image) if @user.profile_image&.attached?
-    render "show"
+    render "show", formats: [:json]
   end
- 
+
   def update
     # fields = permitted_params.to_h.compact
     @user = current_user
     @user.profile_image.attach(permitted_params[:profile_image])
+    new_attributes = permitted_params.slice(:first_name, :last_name, :email, :password).compact_blank
+    @user.assign_attributes(**new_attributes)
     if @user.save!
-      render "show", status: 200
+      render "show", status: 200, formats: [:json]
     else
       render json: {errors: @user.errors.full_messages}, status: 422
     end

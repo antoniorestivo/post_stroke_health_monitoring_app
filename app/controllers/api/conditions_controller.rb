@@ -1,6 +1,6 @@
 class Api::ConditionsController < ApplicationController
   before_action :authenticate_user
-  
+
   def index
     @conditions = current_user.conditions
     render "index"
@@ -33,13 +33,12 @@ class Api::ConditionsController < ApplicationController
     condition_id = params[:id]
     @condition = current_user.conditions.find_by(id: condition_id)
     if @condition
-      @condition.name = params[:name] || @condition.name
-      @condition.support = params[:support] || @condition.support
-      @condition.treatment_retrospect = params[:treatment_retrospect] || @condition.treatment_retrospect
-      @condition.treatment_plan = params[:treatment_plan] ||@condition.treatment_plan
-      @condition.image_url = params[:image_url] || @condition.image_url
-      @condition.video_url = params[:video_url] || @condition.video_url
-    
+      @condition.name = params[:name].presence || @condition.name
+      @condition.support = params[:support].presence || @condition.support
+      @condition.image_url = params[:image_url].presence || @condition.image_url
+      @condition.video_url = params[:video_url].presence || @condition.video_url
+      @condition.description = params[:description].presence || @condition.description
+
       if @condition.save
         render "show"
       else
@@ -49,7 +48,7 @@ class Api::ConditionsController < ApplicationController
       render json: {errors: "Unauthorized"}, status: 422
     end
   end
- 
+
   def destroy
     condition = current_user.conditions.find_by(id: params[:id])
     if condition

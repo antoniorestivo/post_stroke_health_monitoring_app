@@ -3,12 +3,16 @@ module Api
     before_action :authenticate_user
     def index
       @charts = current_user.user_charts
+
+      render :index, formats: [:json]
     end
 
     def show
       @chart = UserChart.find(params[:id])
       journals = current_user.journals.order(created_at: :asc)
       @data = ::UserCharts::Enrich.new(@chart, journals).data
+
+      render :show, formats: [:json]
     end
 
     def new
