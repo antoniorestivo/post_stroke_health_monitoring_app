@@ -1,0 +1,15 @@
+:concurrency: <%= Integer(ENV.fetch("SIDEKIQ_CONCURRENCY", 10)) %>
+
+:queues:
+  - [critical, 5]
+  - [default, 3]
+  - [mailers, 2]
+  - [low, 1]
+
+:logfile: ./log/sidekiq.log
+
+:environment: <%= ENV.fetch("RAILS_ENV", "development") %>
+
+:timeout: <%= Integer(ENV.fetch("SIDEKIQ_TIMEOUT", 25)) %>
+
+:strict: true

@@ -16,6 +16,11 @@ module PostStrokeHealthMonitoringApp
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
+    if Rails.env.test?
+      config.hosts << "www.example.com"
+    end
+
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
@@ -23,5 +28,7 @@ module PostStrokeHealthMonitoringApp
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    config.active_job.queue_adapter = :sidekiq
   end
 end

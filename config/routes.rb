@@ -1,8 +1,10 @@
 Rails.application.routes.draw do
   namespace :api do
-    resources :users do
+    resources :users, except: %i(index) do
       resources :user_charts
     end
+
+    get 'confirm_email' => "users#confirm_email"
 
     resources :conditions do
       resources :treatments do
@@ -21,6 +23,5 @@ Rails.application.routes.draw do
 
     post "/sessions" => "sessions#create"
     resources :journal_templates, only: %i(new create edit update)
-
   end
 end

@@ -1,0 +1,19 @@
+<h1>Confirm your email</h1>
+
+<p>
+  Hi <%= @user.first_name || @user.email %>,
+</p>
+
+<p>
+  Please confirm your email address by clicking the link below:
+</p>
+
+<p>
+  <a href="<%= @confirmation_url %>">
+    Confirm my email
+  </a>
+</p>
+
+<p>
+  If you did not create an account, you can safely ignore this email.
+</p>

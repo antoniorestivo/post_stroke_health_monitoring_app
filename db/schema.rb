@@ -10,28 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_11_07_230813) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_16_010106) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension "pg_catalog.plpgsql"
 
   create_table "active_storage_attachments", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "record_type", null: false
-    t.bigint "record_id", null: false
     t.bigint "blob_id", null: false
     t.datetime "created_at", precision: nil, null: false
+    t.string "name", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
   create_table "active_storage_blobs", force: :cascade do |t|
-    t.string "key", null: false
-    t.string "filename", null: false
-    t.string "content_type"
-    t.text "metadata"
     t.bigint "byte_size", null: false
     t.string "checksum"
+    t.string "content_type"
     t.datetime "created_at", precision: nil, null: false
+    t.string "filename", null: false
+    t.string "key", null: false
+    t.text "metadata"
     t.string "service_name", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
@@ -43,89 +43,94 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_07_230813) do
   end
 
   create_table "conditions", force: :cascade do |t|
-    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "image_url"
     t.string "name"
     t.boolean "support"
-    t.string "image_url"
-    t.string "video_url"
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "description"
+    t.integer "user_id"
+    t.string "video_url"
   end
 
   create_table "health_metrics", force: :cascade do |t|
-    t.bigint "journal_template_id"
-    t.string "metric_name"
-    t.string "metric_data_type"
-    t.string "metric_unit_name"
     t.datetime "created_at", null: false
+    t.bigint "journal_template_id"
+    t.string "metric_data_type"
+    t.string "metric_name"
+    t.string "metric_unit_name"
     t.datetime "updated_at", null: false
     t.float "warning_threshold"
   end
 
   create_table "journal_templates", force: :cascade do |t|
-    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
   end
 
   create_table "journals", force: :cascade do |t|
-    t.bigint "journal_template_id"
-    t.text "description"
-    t.string "image_url"
-    t.string "video_url"
-    t.text "health_routines"
-    t.jsonb "metrics"
     t.datetime "created_at", null: false
+    t.text "description"
+    t.text "health_routines"
+    t.string "image_url"
+    t.bigint "journal_template_id"
+    t.jsonb "metrics"
     t.datetime "updated_at", null: false
+    t.string "video_url"
   end
 
   create_table "treatment_retrospects", force: :cascade do |t|
-    t.bigint "treatment_id"
-    t.integer "rating"
-    t.text "feedback"
     t.datetime "created_at", null: false
+    t.text "feedback"
+    t.integer "rating"
+    t.bigint "treatment_id"
     t.datetime "updated_at", null: false
   end
 
   create_table "treatments", force: :cascade do |t|
     t.bigint "condition_id"
-    t.text "description"
     t.datetime "created_at", null: false
+    t.text "description"
     t.datetime "updated_at", null: false
   end
 
   create_table "user_charts", force: :cascade do |t|
-    t.bigint "user_id"
-    t.string "title"
     t.string "chart_type"
+    t.datetime "created_at", null: false
+    t.jsonb "options"
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
     t.string "x_label"
     t.string "y_label"
-    t.jsonb "options"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "user_logins", force: :cascade do |t|
-    t.bigint "user_id"
+    t.datetime "created_at", null: false
     t.integer "date_dimension_id"
     t.integer "month_dimension_id"
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
     t.index ["date_dimension_id"], name: "index_user_logins_on_date_dimension_id"
     t.index ["month_dimension_id"], name: "index_user_logins_on_month_dimension_id"
     t.index ["user_id"], name: "index_user_logins_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
+    t.string "confirmation_token"
+    t.datetime "confirmed_at", precision: nil
+    t.datetime "created_at", null: false
     t.string "email"
-    t.string "password_digest"
+    t.boolean "email_confirmed", default: false, null: false
     t.string "first_name"
     t.string "last_name"
-    t.datetime "created_at", null: false
+    t.string "password_digest"
+    t.string "preferred_name"
     t.datetime "updated_at", null: false
     t.jsonb "usage_statistics"
-    t.string "preferred_name"
+    t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
+    t.index ["email"], name: "index_users_on_email", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

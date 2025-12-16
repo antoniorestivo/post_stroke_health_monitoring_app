@@ -1,16 +1,55 @@
-version: "24.0.7"
-
 services:
   db:
-    image: postgres:latest
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: post_stroke_health_monitoring_development
     volumes:
-      - data:/var/lib/postgresql/data
-    env_file: ./.env.local #Here we are using the already existing .env.local file
+      - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
-  db-test:
-    image: postgres:latest
-    env_file: ./.env.test.local
+  mailhog:
+    image: mailhog/mailhog:latest
     ports:
-      - 5433:5432
+      - "8025:8025"   # Web UI
+      - "1025:1025"   # SMTP
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  web:
+    build: .
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -b 0.0.0.0"
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+      - mailhog
+    environment:
+      RAILS_ENV: development
+      DATABASE_URL: postgres://postgres:password@db:5432/post_stroke_health_monitoring_development
+      REDIS_URL: redis://redis:6379/0
+
+  sidekiq:
+    build: .
+    command: bundle exec sidekiq
+    depends_on:
+      - db
+      - redis
+      - mailhog
+    environment:
+      RAILS_ENV: development
+      DATABASE_URL: postgres://postgres:password@db:5432/post_stroke_health_monitoring_development
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - .:/app
+
+volumes:
+  postgres_data:

@@ -1,5 +1,4 @@
-class Api::JournalsController < ApplicationController
-  before_action :authenticate_user
+class Api::JournalsController < Api::BaseController
   def index
     limit = params[:limit] || 9
     offset = params[:offset] || 0
@@ -24,7 +23,7 @@ class Api::JournalsController < ApplicationController
     if @journals.first.user == current_user
       render "show"
     else
-      render json: {errors: "Unauthorized"}, status: 422
+      render json: { errors: "Unauthorized" }, status: 422
     end
   end
 
@@ -42,9 +41,10 @@ class Api::JournalsController < ApplicationController
     if @journal.save
       redirect_to action: :index
     else
-      render json: {errors: @journal.errors.full_messages}, status: 422
+      render json: { errors: @journal.errors.full_messages }, status: 422
     end
   end
+
   def update
     journal_id = params[:id]
     @journal = current_user.journals.find_by(id: journal_id)
@@ -58,22 +58,20 @@ class Api::JournalsController < ApplicationController
       if @journal.save
         render "show"
       else
-        render json: {errors: @recipe.errors.full_messages}, status: 422
+        render json: { errors: @journal.errors.full_messages }, status: 422
       end
     else
-      render json: {errors: "Unauthorized"}, status: 422
-    end 
+      render json: { errors: "Unauthorized" }, status: 422
+    end
   end
-  
+
   def destroy
     journal = current_user.journals.find_by(id: params[:id])
     if journal
       journal.destroy
-      render json: {message: "Journal successfully destroyed!"}
+      render json: { message: "Journal successfully destroyed!" }
     else
-      render json: {message: "Journal does not exist"}, status: 422
+      render json: { message: "Journal does not exist" }, status: 422
     end
-
   end
-
 end

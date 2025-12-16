@@ -1,6 +1,5 @@
 module Api
-  class UserChartsController < ApplicationController
-    before_action :authenticate_user
+  class UserChartsController < Api::BaseController
     def index
       @charts = current_user.user_charts
 

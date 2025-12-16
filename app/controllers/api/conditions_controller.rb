@@ -1,34 +1,35 @@
-class Api::ConditionsController < ApplicationController
-  before_action :authenticate_user
-
+class Api::ConditionsController < Api::BaseController
   def index
     @conditions = current_user.conditions
     render "index"
   end
+
   def show
     condition_id = params[:id]
     @condition = current_user.conditions.find_by(id: condition_id)
     if @condition
       render "show"
     else
-      render json: {errors: "Unauthorized"}, status: 422
+      render json: { errors: "Unauthorized" }, status: 422
     end
   end
+
   def create
     @condition = Condition.new(
-    user_id: current_user.id,
-    name: params[:name],
-    support: params[:support],
-    description: params[:description],
-    image_url: params[:image_url],
-    video_url: params[:video_url]
-  )
+      user_id: current_user.id,
+      name: params[:name],
+      support: params[:support],
+      description: params[:description],
+      image_url: params[:image_url],
+      video_url: params[:video_url]
+    )
     if @condition.save
       render "show"
     else
-      render json: {errors: @condition.errors.full_messages}, status: 422
+      render json: { errors: @condition.errors.full_messages }, status: 422
     end
   end
+
   def update
     condition_id = params[:id]
     @condition = current_user.conditions.find_by(id: condition_id)
@@ -42,10 +43,10 @@ class Api::ConditionsController < ApplicationController
       if @condition.save
         render "show"
       else
-        render json: {errors: @condition.error.full_messages}, status: 422
+        render json: { errors: @condition.errors.full_messages }, status: 422
       end
     else
-      render json: {errors: "Unauthorized"}, status: 422
+      render json: { errors: "Unauthorized" }, status: 422
     end
   end
 
@@ -53,9 +54,9 @@ class Api::ConditionsController < ApplicationController
     condition = current_user.conditions.find_by(id: params[:id])
     if condition
       condition.destroy
-      render json: {message: "Condition successfully destroyed!"}
+      render json: { message: "Condition successfully destroyed!" }
     else
-      render json: {message: "Condition does not exist"}, status: 422
+      render json: { message: "Condition does not exist" }, status: 422
     end
   end
 end

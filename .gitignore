@@ -27,3 +27,12 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# Ignore AI generated repo summaries
+.repo_summary_cache.json
+.repo_rag_plan.txt
+
+config/database.yml
+config/application.yml
+.env
+.env.local

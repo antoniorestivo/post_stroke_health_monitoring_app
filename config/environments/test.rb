@@ -18,6 +18,9 @@ Rails.application.configure do
   # Configure public file server for tests with cache-control for performance.
   config.public_file_server.headers = { "cache-control" => "public, max-age=3600" }
 
+  # do not block hosts during testing (e.g. allow example.com)
+  config.middleware.delete ActionDispatch::HostAuthorization
+
   # Show full error reports.
   config.consider_all_requests_local = true
   config.cache_store = :null_store
@@ -50,4 +53,7 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # Use the test queue adapter so tests do not require an external Redis/Sidekiq process.
+  config.active_job.queue_adapter = :test
 end

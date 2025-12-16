@@ -1,6 +1,5 @@
 module Api
-  class TreatmentRetrospectsController < ApplicationController
-    before_action :authenticate_user
+  class TreatmentRetrospectsController < Api::BaseController
 
     def index
       limit = params[:limit] || 9

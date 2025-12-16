@@ -1,5 +1,5 @@
 module Api
-  class JournalTemplatesController < ApplicationController
+  class JournalTemplatesController < Api::BaseController
     def new
     end
 
