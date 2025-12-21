@@ -1,6 +1,7 @@
 module Api
   class UsersController < ::Api::BaseController
     skip_before_action :authenticate_user, only: %i(create confirm_email)
+
     def create
       @user = User.new(**permitted_params.compact_blank)
       if @user.save
@@ -35,15 +36,16 @@ module Api
     end
 
     def update
-      # fields = permitted_params.to_h.compact
       @user = current_user
-      @user.profile_image.attach(permitted_params[:profile_image])
-      new_attributes = permitted_params.slice(:first_name, :last_name, :email, :password).compact_blank
+      if permitted_params[:profile_image].present?
+        @user.profile_image.attach(permitted_params[:profile_image])
+      end
+      new_attributes = permitted_params.slice(:first_name, :last_name, :email, :password, :password_confirmation).compact_blank
       @user.assign_attributes(**new_attributes)
-      if @user.save!
+      if @user.save
         render "show", status: 200, formats: [:json]
       else
-        render json: {errors: @user.errors.full_messages}, status: 422
+        render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
       end
     end
 
@@ -53,18 +55,20 @@ module Api
         @user.confirm_email!(params[:token])
         render json: { success: 'true' }
       else
-        render json: { success: 'false', errors: 'User not found' }
+        render json: { success: 'false', errors: 'User not found' }, status: :not_found
       end
-    end
-
-    def permitted_params
-      params.permit(:first_name, :last_name, :email, :password, :old_password, :password_confirmation, :profile_image)
     end
 
     def destroy
       user = current_user
       user.destroy
-      render json: {message: "User successfully deleted!"}
+      render json: { message: "User successfully deleted!" }
+    end
+
+    private
+
+    def permitted_params
+      params.permit(:first_name, :last_name, :email, :password, :old_password, :password_confirmation, :profile_image)
     end
   end
 end

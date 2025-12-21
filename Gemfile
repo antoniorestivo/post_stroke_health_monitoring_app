@@ -36,6 +36,8 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'rails-controller-testing'
   gem 'faker'
+  gem 'brakeman', require: false
+  gem 'bundler-audit', require: false
 end
 
 group :development do
@@ -49,3 +51,4 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'rack-cors'
 gem 'jb'
+gem 'rack-attack'

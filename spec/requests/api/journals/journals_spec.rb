@@ -37,20 +37,20 @@ RSpec.describe 'Journals requests', type: :request do
       expect(response).to have_http_status(:success)
     end
 
-    it "returns unauthorized if the user is not the journal's owner" do
+    it "returns not found if the user is not the journal's owner" do
       another_user = create(:user, email: 'abc@av.com')
       another_journal = create(:journal, journal_template: journal_template, user: another_user)
       get "/api/journals/#{another_journal.id}", headers: auth_headers_for(user), as: :json
-      expect(response).to have_http_status(422)
+      expect(response).to have_http_status(404)
     end
   end
 
   describe "POST /api/journals" do
-    it "creates a new journal and redirects to index" do
+    it "creates a new journal and renders show action" do
       expect {
         post "/api/journals", params: valid_journal_params, headers: auth_headers_for(user), as: :json
       }.to change(Journal, :count).by(1)
-      expect(response).to redirect_to(api_journals_path)
+      expect(response).to render_template(:show)
     end
   end
 
@@ -62,13 +62,13 @@ RSpec.describe 'Journals requests', type: :request do
       expect(response).to have_http_status(:success)
     end
 
-    it "returns unauthorized if the user is not the journal's owner" do
+    it "returns not found if the user is not the journal's owner" do
       another_user = create(:user, email: 'joe@bbc.com')
       another_template = create(:journal_template, user: another_user)
       another_journal = create(:journal, journal_template: another_template)
       patch "/api/journals/#{another_journal.id}", params: { description: "New description" },
             headers: auth_headers_for(user), as: :json
-      expect(response).to have_http_status(422)
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -81,12 +81,12 @@ RSpec.describe 'Journals requests', type: :request do
       expect(response).to have_http_status(:success)
     end
 
-    it "returns unauthorized if the journal does not belong to the current user" do
+    it "returns not found if the journal does not belong to the current user" do
       another_user = create(:user, email: 'joe@bbc.com')
       another_template = create(:journal_template, user: another_user)
       another_journal = create(:journal, journal_template: another_template)
       delete "/api/journals/#{another_journal.id}", headers: auth_headers_for(user), as: :json
-      expect(response).to have_http_status(422)
+      expect(response).to have_http_status(404)
     end
   end
 end

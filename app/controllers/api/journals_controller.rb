@@ -1,77 +1,88 @@
 class Api::JournalsController < Api::BaseController
+  before_action :set_journal_template, only: [:index, :new]
+  before_action :set_journal_for_current_user, only: [:show, :update, :destroy]
+
   def index
-    limit = params[:limit] || 9
-    offset = params[:offset] || 0
-    @template = current_user.journal_template
-    @journals = Journal.where(journal_template: @template).where.not(metrics: nil).limit(limit).offset(offset)
-    @total_records = Journal.where(journal_template: @template).where.not(metrics: nil).count
-    @enriched_metrics = Journals::EnrichMetrics.new(@journals, @template).with_units
+    limit = (params[:limit] || 9).to_i
+    offset = (params[:offset] || 0).to_i
+    limit = 100 if limit > 100
+    offset = 0 if offset.negative?
+
+    @journals = current_user.journals
+                            .where(journal_template: @journal_template)
+                            .where.not(metrics: nil)
+                            .limit(limit)
+                            .offset(offset)
+    @total_records = current_user.journals
+                                 .where(journal_template: @journal_template)
+                                 .where.not(metrics: nil)
+                                 .count
+    @enriched_metrics = Journals::EnrichMetrics.new(@journals, @journal_template).with_units
   end
 
   def new
-    @journal_template = JournalTemplate.find_by(user: current_user)
     @health_metrics = HealthMetric.where(journal_template: @journal_template)
     render json: @health_metrics
   end
 
   def show
-    journal_id = params[:id]
-    @journal = Journal.find(journal_id)
-    @journals = Journal.where(id: journal_id)
+    collection = current_user.journals.where(id: params[:id])
+    @journal = collection&.first
     @template = current_user.journal_template
-    @enriched_metrics = Journals::EnrichMetrics.new(@journals, @template).with_units
-    if @journals.first.user == current_user
-      render "show"
-    else
-      render json: { errors: "Unauthorized" }, status: 422
-    end
+    @enriched_metrics = Journals::EnrichMetrics.new(collection, @template).with_units
+    render "show"
   end
 
   def create
-    Rails.logger.warn("Params: #{params.inspect}")
     template = JournalTemplate.find_by(user: current_user)
-    @journal = Journal.new(
-      journal_template: template,
-      description: params[:description],
-      image_url: params[:image_url],
-      video_url: params[:video_url],
-      health_routines: params[:health_routines],
-      metrics: params[:metrics]
-    )
+    @journal = current_user.journals.new(journal_params.merge(journal_template: template))
+
     if @journal.save
-      redirect_to action: :index
+      @journals = Journal.where(id: @journal.id)
+      @template = current_user.journal_template
+      @enriched_metrics = Journals::EnrichMetrics.new(@journals, @template).with_units
+      render "show", status: :created
     else
-      render json: { errors: @journal.errors.full_messages }, status: 422
+      render json: { errors: @journal.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
   def update
-    journal_id = params[:id]
-    @journal = current_user.journals.find_by(id: journal_id)
-
-    if @journal
-      @journal.description = params[:description] || @journal.description
-      @journal.image_url = params[:image_url] || @journal.image_url
-      @journal.video_url = params[:video_url] || @journal.video_url
-      @journal.health_routines = params[:health_routines] || @journal.health_routines
-      @journal.metrics = params[:metrics] || @journal.metrics
-      if @journal.save
-        render "show"
-      else
-        render json: { errors: @journal.errors.full_messages }, status: 422
-      end
+    if @journal.update(journal_params)
+      @journals = Journal.where(id: @journal.id)
+      @template = current_user.journal_template
+      @enriched_metrics = Journals::EnrichMetrics.new(@journals, @template).with_units
+      render "show"
     else
-      render json: { errors: "Unauthorized" }, status: 422
+      render json: { errors: @journal.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
   def destroy
-    journal = current_user.journals.find_by(id: params[:id])
-    if journal
-      journal.destroy
-      render json: { message: "Journal successfully destroyed!" }
-    else
-      render json: { message: "Journal does not exist" }, status: 422
-    end
+    @journal.destroy
+    render json: { message: "Journal successfully destroyed!" }
+  end
+
+  private
+
+  def set_journal_template
+    @journal_template = current_user.journal_template
+  end
+
+  def set_journal_for_current_user
+    @journal = current_user.journals.find_by(id: params[:id])
+    return if @journal
+
+    render json: { errors: "Not found" }, status: :not_found
+  end
+
+  def journal_params
+    params.require(:journal).permit(
+      :description,
+      :image_url,
+      :video_url,
+      :health_routines,
+      metrics: {}
+    )
   end
 end

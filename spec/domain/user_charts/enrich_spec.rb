@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe UserCharts::Enrich do
   let(:user_chart) { create(:user_chart, chart_type: 'line', x_label: 'Time', y_label: 'steps', options: { 'treatmentIds' => [1, 2] }) }
-  let!(:journal_1) { create(:journal, created_at: 1.day.ago, metrics: { 'steps' => 1000, 'calories' => 250 }) }
-  let!(:journal_2) { create(:journal, created_at: 2.days.ago, metrics: { 'steps' => 2000, 'calories' => 500 }) }
-  let(:journals) { Journal.all }
+  let!(:journal1) { create(:journal, created_at: 1.day.ago, metrics: { 'steps' => 1000, 'calories' => 250 }) }
+  let!(:journal2) { create(:journal, created_at: 2.days.ago, metrics: { 'steps' => 2000, 'calories' => 500 }) }
+  let(:journals) { [journal1, journal2] }
   let(:enricher) { described_class.new(user_chart, journals) }
 
   describe '#data' do
@@ -33,7 +33,7 @@ RSpec.describe UserCharts::Enrich do
       it 'returns the refined data' do
         data = enricher.data
 
-        expect(data[:x]).to eq([journal_1.created_at.strftime('%m-%d-%Y'), journal_2.created_at.strftime('%m-%d-%Y')])
+        expect(data[:x]).to eq([journal1.created_at.strftime('%m-%d-%Y'), journal2.created_at.strftime('%m-%d-%Y')])
         expect(data[:y]).to eq([1000, 2000])
         expect(data[:thresholds]).to eq({ x: nil, y: nil })
       end

@@ -20,7 +20,6 @@ module PostStrokeHealthMonitoringApp
       config.hosts << "www.example.com"
     end
 
-
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
@@ -30,5 +29,8 @@ module PostStrokeHealthMonitoringApp
     # config.eager_load_paths << Rails.root.join("extras")
 
     config.active_job.queue_adapter = :sidekiq
+
+    # Insert Rack::Attack middleware for rate limiting and abuse protection.
+    config.middleware.use Rack::Attack
   end
 end

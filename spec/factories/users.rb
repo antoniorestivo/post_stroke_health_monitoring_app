@@ -3,7 +3,7 @@ FactoryBot.define do
     first_name { 'Joe' }
     last_name  { 'Bloe' }
     email      { Faker::Internet.email }
-    password   { 'blah' }
+    password   { 'long_enough_password' }
 
     email_confirmed { true }
     confirmed_at    { Time.current }
@@ -14,7 +14,7 @@ FactoryBot.define do
     first_name { 'Joe' }
     last_name  { 'Bloe' }
     email      { Faker::Internet.email }
-    password   { 'blah' }
+    password   { 'long_enough_password' }
 
     email_confirmed   { false }
     confirmed_at      { nil }

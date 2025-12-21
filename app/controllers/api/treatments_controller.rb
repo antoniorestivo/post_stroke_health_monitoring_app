@@ -1,9 +1,10 @@
 module Api
   class TreatmentsController < Api::BaseController
-    before_action :validate_user_condition, except: :all
+    before_action :set_condition, except: :all
+    before_action :set_treatment, only: [:show, :update, :destroy]
 
     def index
-      @treatments = Treatment.where(condition_id: params[:condition_id])
+      @treatments = @condition.treatments
     end
 
     def all
@@ -11,31 +12,45 @@ module Api
     end
 
     def show
-      @treatment = Treatment.find(params[:id])
     end
 
     def create
-      Treatment.create(condition_id: permitted_params[:condition_id], description: permitted_params[:description])
+      @treatment = @condition.treatments.build(treatment_params)
+
+      if @treatment.save
+        render :show, status: :created
+      else
+        render json: { errors: @treatment.errors.full_messages }, status: :unprocessable_entity
+      end
     end
 
     def update
-      treatment = Treatment.find(params[:id])
-      treatment.update(permitted_params)
+      if @treatment.update(treatment_params)
+        render :show
+      else
+        render json: { errors: @treatment.errors.full_messages }, status: :unprocessable_entity
+      end
     end
 
     def destroy
-      Treatment.find(params[:id]).destroy
+      @treatment.destroy
+      head :no_content
     end
 
     private
 
-    def permitted_params
-      params.permit(:description, :condition_id, :treatment)
+    def set_condition
+      @condition = current_user.conditions.find_by(id: params[:condition_id])
+      render json: { errors: "Not Found" }, status: :not_found unless @condition
     end
 
-    def validate_user_condition
-      condition_user_id = Condition.find(params[:condition_id]).user_id
-      render json: { errors: "Unauthorized" }, status: 422 unless current_user.id == condition_user_id
+    def set_treatment
+      @treatment = @condition.treatments.find_by(id: params[:id])
+      render json: { errors: "Not Found" }, status: :not_found unless @treatment
+    end
+
+    def treatment_params
+      params.require(:treatment).permit(:description)
     end
   end
 end

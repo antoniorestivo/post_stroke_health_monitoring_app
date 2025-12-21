@@ -1,40 +1,13 @@
 class Api::SessionsController < Api::BaseController
   skip_before_action :authenticate_user
   def create
-    Rails.logger.warn('LOGGING IN!!!!!!!!!!!')
-    user = User.find_by(email: params[:email])
+    user = User.find_by(email: params[:email].to_s.downcase.strip)
 
-    # Only track login attempts when a user record exists
     UserLogin.create(user: user) if user
 
-    # If the user exists but has not confirmed their email, (re)send confirmation
     if user && !user.email_confirmed?
-      # Ensure the user has a confirmation token
-      if user.confirmation_token.blank?
-        # Prefer a dedicated method if it exists, otherwise generate directly
-        if user.respond_to?(:generate_confirmation_token)
-          user.generate_confirmation_token
-          user.save!
-        else
-          user.update!(
-            confirmation_token: SecureRandom.hex(20)
-          )
-        end
-      end
-
-      # Attempt to send the confirmation email if the model exposes such a method
-      if user.respond_to?(:send_confirmation_email)
-        user.send_confirmation_email
-      else
-        # Fallback: call mailer directly if it's available
-        if defined?(UserMailer)
-          begin
-            UserMailer.confirmation_email(user).deliver_later
-          rescue => e
-            Rails.logger.error("Failed to send confirmation email: #{e.class} - #{e.message}")
-          end
-        end
-      end
+      ensure_confirmation_token(user)
+      send_confirmation_email(user)
 
       render json: {
         error: 'Email not confirmed',
@@ -42,19 +15,53 @@ class Api::SessionsController < Api::BaseController
       }, status: :unauthorized and return
     end
 
-    Rails.logger.warn(user.email) if user
-    if user && user.authenticate(params[:password])
+    if user&.authenticate(params[:password].to_s)
       jwt = JWT.encode(
         {
           user_id: user.id,
           exp: 24.hours.from_now.to_i
         },
-        Rails.application.secret_key_base,
-        "HS256"
+        jwt_secret_key,
+        'HS256'
       )
-      render json: { jwt: jwt, email: user.email, user_id: user.id }, status: :created
+      render json: {
+        jwt: jwt,
+        user: {
+          id: user.id,
+          email: user.email
+        }
+      }, status: :created
     else
-      render json: {}, status: :unauthorized
+      render json: { error: 'Invalid email or password' }, status: :unauthorized
     end
+  end
+
+  private
+
+  def ensure_confirmation_token(user)
+    return if user.confirmation_token.present?
+
+    if user.respond_to?(:generate_confirmation_token)
+      user.generate_confirmation_token
+      user.save!
+    else
+      user.update!(confirmation_token: SecureRandom.hex(20))
+    end
+  rescue StandardError => e
+    Rails.logger.error("Failed to ensure confirmation token: #{e.class} - #{e.message}")
+  end
+
+  def send_confirmation_email(user)
+    if user.respond_to?(:send_confirmation_email)
+      user.send_confirmation_email
+    elsif defined?(UserMailer)
+      UserMailer.confirmation_email(user).deliver_later
+    end
+  rescue StandardError => e
+    Rails.logger.error("Failed to send confirmation email: #{e.class} - #{e.message}")
+  end
+
+  def jwt_secret_key
+    ENV['JWT_SECRET_KEY'].presence || Rails.application.secret_key_base
   end
 end
