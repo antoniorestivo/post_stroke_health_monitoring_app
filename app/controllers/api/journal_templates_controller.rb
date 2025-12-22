@@ -25,7 +25,7 @@ module Api
 
         render json: { id: journal_template.id }, status: :created
       else
-        render json: { errors: journal_template.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: journal_template.errors.full_messages }, status: :unprocessable_content
       end
     end
 
@@ -35,7 +35,7 @@ module Api
 
     def update
       if permitted_params["metrics"].blank?
-        return render json: { errors: ["Metrics are required"] }, status: :unprocessable_entity
+        return render json: { errors: ["Metrics are required"] }, status: :unprocessable_content
       end
 
       @template.health_metrics.destroy_all
@@ -48,7 +48,7 @@ module Api
       if @template.errors.empty?
         head :no_content
       else
-        render json: { errors: @template.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: @template.errors.full_messages }, status: :unprocessable_content
       end
     end
 

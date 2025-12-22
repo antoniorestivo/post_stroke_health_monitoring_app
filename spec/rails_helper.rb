@@ -7,6 +7,8 @@ require 'sidekiq/testing'
 
 Sidekiq::Testing.fake!
 
+Dir[Rails.root.join('spec/support/**/*.rb')].sort.each { |f| require f }
+
 RSpec.configure do |config|
   config.fixture_paths = ["#{::Rails.root}/spec/fixtures"]
   config.use_transactional_fixtures = true

@@ -1,8 +1,14 @@
 require "rails_helper"
 
 RSpec.describe "Authentication", type: :request do
-  let!(:user) { User.create!(email: "user@example.com", password: "longer_password",
-                             password_confirmation: "longer_password", email_confirmed:) }
+  let!(:user) do
+    User.create!(
+      email: "user@example.com",
+      password: "longer_password",
+      password_confirmation: "longer_password",
+      email_confirmed: email_confirmed
+    )
+  end
   let(:login_path) { "/api/sessions" }
   let(:protected_users_me_path) { "/api/users/me" }
   let(:protected_conditions_path) { "/api/conditions/" }
@@ -53,6 +59,16 @@ RSpec.describe "Authentication", type: :request do
         post login_path, params: { email: "nope@example.com", password: "longer_password" }
 
         expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when email is not confirmed" do
+      let(:email_confirmed) { false }
+
+      it "returns unauthorized or forbidden status" do
+        post login_path, params: { email: user.email, password: "longer_password" }
+
+        expect(response).to satisfy { |r| [401, 403].include?(r.status) }
       end
     end
   end
@@ -114,8 +130,13 @@ RSpec.describe "Authentication", type: :request do
   end
 
   describe "authorization and ownership" do
-    let!(:other_user) { User.create!(email: "other@example.com", password: "longer_password",
-                                     password_confirmation: "longer_password") }
+    let!(:other_user) do
+      User.create!(
+        email: "other@example.com",
+        password: "longer_password",
+        password_confirmation: "longer_password"
+      )
+    end
     let!(:user_condition) { Condition.create!(name: "Mine", user: user) }
     let!(:other_condition) { Condition.create!(name: "NotMine", user: other_user) }
 

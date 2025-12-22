@@ -19,7 +19,8 @@ class Api::SessionsController < Api::BaseController
       jwt = JWT.encode(
         {
           user_id: user.id,
-          exp: 24.hours.from_now.to_i
+          exp: 24.hours.from_now.to_i,
+          email: user.email
         },
         jwt_secret_key,
         'HS256'

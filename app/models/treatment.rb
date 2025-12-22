@@ -3,4 +3,5 @@ class Treatment < ApplicationRecord
   has_one :user, through: :condition
 
   validates :condition, presence: true
+  validates :description, presence: true
 end

@@ -43,7 +43,7 @@ class Api::JournalsController < Api::BaseController
       @enriched_metrics = Journals::EnrichMetrics.new(@journals, @template).with_units
       render "show", status: :created
     else
-      render json: { errors: @journal.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @journal.errors.full_messages }, status: :unprocessable_content
     end
   end
 
@@ -54,7 +54,7 @@ class Api::JournalsController < Api::BaseController
       @enriched_metrics = Journals::EnrichMetrics.new(@journals, @template).with_units
       render "show"
     else
-      render json: { errors: @journal.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @journal.errors.full_messages }, status: :unprocessable_content
     end
   end
 

@@ -25,7 +25,6 @@ module Api
       nil
     end
 
-
     def authenticate_user
       Rails.logger.warn("Headers: #{request.headers.to_h.slice('Authorization', 'HTTP_AUTHORIZATION')}")
 

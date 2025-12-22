@@ -15,7 +15,7 @@ class Api::ConditionsController < Api::BaseController
     if @condition.save
       render "show"
     else
-      render json: { errors: @condition.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @condition.errors.full_messages }, status: :unprocessable_content
     end
   end
 
@@ -23,7 +23,7 @@ class Api::ConditionsController < Api::BaseController
     if @condition.update(condition_params)
       render "show"
     else
-      render json: { errors: @condition.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @condition.errors.full_messages }, status: :unprocessable_content
     end
   end
 

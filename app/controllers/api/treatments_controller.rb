@@ -20,7 +20,7 @@ module Api
       if @treatment.save
         render :show, status: :created
       else
-        render json: { errors: @treatment.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: @treatment.errors.full_messages }, status: :unprocessable_content
       end
     end
 
@@ -28,7 +28,7 @@ module Api
       if @treatment.update(treatment_params)
         render :show
       else
-        render json: { errors: @treatment.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: @treatment.errors.full_messages }, status: :unprocessable_content
       end
     end
 
