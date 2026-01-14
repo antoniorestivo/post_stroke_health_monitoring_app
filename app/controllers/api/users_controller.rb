@@ -3,7 +3,7 @@ module Api
     skip_before_action :authenticate_user, only: %i(create confirm_email)
 
     def create
-      @user = User.new(**permitted_params.compact_blank)
+      @user = User.new(**create_params.compact_blank)
       if @user.save
         render "show", formats: [:json]
       else
@@ -69,6 +69,10 @@ module Api
 
     def permitted_params
       params.permit(:first_name, :last_name, :email, :password, :old_password, :password_confirmation, :profile_image)
+    end
+
+    def create_params
+      params.require(:user).permit(:first_name, :last_name, :email, :password, :old_password, :password_confirmation, :profile_image)
     end
   end
 end
