@@ -22,6 +22,8 @@ Rails.application.routes.draw do
     get "treatments/all" => "treatments#all"
 
     post "/sessions" => "sessions#create"
+    post "/demo_login" => "sessions#demo"
+
     resources :journal_templates, only: %i(new create edit update)
   end
 end

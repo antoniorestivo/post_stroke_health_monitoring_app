@@ -37,6 +37,28 @@ class Api::SessionsController < Api::BaseController
     end
   end
 
+  def demo
+    demo_user = User.find_by!(email: "alex.demo@healthmonitor.app")
+
+    token = JWT.encode(
+      {
+        user_id: demo_user.id,
+        exp: 24.hours.from_now.to_i,
+        email: demo_user.email
+      },
+      jwt_secret_key,
+      'HS256'
+    )
+
+    render json: {
+      jwt: token,
+      user: {
+        id: demo_user.id,
+        email: demo_user.email
+      }
+    }, status: :created
+  end
+
   private
 
   def ensure_confirmation_token(user)
