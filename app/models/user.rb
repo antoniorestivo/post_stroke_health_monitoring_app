@@ -21,6 +21,7 @@ class User < ApplicationRecord
   end
 
   def send_confirmation_email
+    return if self.demo == true || self.email_confirmed == true
     UserMailer.confirmation_email(self).deliver_later
   end
 

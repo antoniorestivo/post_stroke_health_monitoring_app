@@ -38,7 +38,17 @@ class Api::SessionsController < Api::BaseController
   end
 
   def demo
-    demo_user = User.find_by!(email: "alex.demo@healthmonitor.app")
+    demo_user = User.create!(
+      email: "demo_#{SecureRandom.hex(6)}@example.com",
+      email_confirmed: true,
+      first_name: 'Alex',
+      last_name: 'The Demo User',
+      password: SecureRandom.hex(12),
+      demo: true,
+      confirmed_at: Time.current
+    )
+
+    DemoSeedUser.call(demo_user)
 
     token = JWT.encode(
       {
