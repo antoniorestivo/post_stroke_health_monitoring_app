@@ -55,7 +55,7 @@ module Api
     private
 
     def set_journal_template
-      @template = current_user.journal_templates.find_by(id: params[:id])
+      @template = current_user.journal_template
       return if @template
 
       render json: { errors: ["Journal template not found"] }, status: :not_found
