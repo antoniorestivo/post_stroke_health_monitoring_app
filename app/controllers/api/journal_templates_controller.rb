@@ -7,22 +7,17 @@ module Api
     end
 
     def create
-      journal_template = current_user.journal_templates.build
+      journal_template = JournalTemplate.new(user: current_user)
+      field_names(create_params).each do |field_name, v|
+        id = field_name.scan(/\d+/).first
+        field_unit = create_params["field_unit_#{id}"]
+        field_data_type = create_params["field_data_type_#{id}"]
+        warning_threshold = create_params["warning_threshold_#{id}"]
+        HealthMetric.create(journal_template: journal_template, metric_name: v, metric_data_type: field_data_type,
+                            metric_unit_name: field_unit, warning_threshold: warning_threshold)
+      end
+
       if journal_template.save
-        field_names.each do |field_name, value|
-          id = field_name.scan(/\d+/).first
-          field_unit = permitted_params["field_unit_#{id}"]
-          field_data_type = permitted_params["field_data_type_#{id}"]
-          warning_threshold = permitted_params["warning_threshold_#{id}"]
-
-          journal_template.health_metrics.create(
-            metric_name: value,
-            metric_data_type: field_data_type,
-            metric_unit_name: field_unit,
-            warning_threshold: warning_threshold
-          )
-        end
-
         render json: { id: journal_template.id }, status: :created
       else
         render json: { errors: journal_template.errors.full_messages }, status: :unprocessable_content
@@ -34,13 +29,13 @@ module Api
     end
 
     def update
-      if permitted_params["metrics"].blank?
+      if update_params["metrics"].blank?
         return render json: { errors: ["Metrics are required"] }, status: :unprocessable_content
       end
 
       @template.health_metrics.destroy_all
 
-      permitted_params["metrics"].each do |metric|
+      update_params["metrics"].each do |metric|
         values = metric.slice("metric_name", "metric_data_type", "metric_unit_name", "warning_threshold")
         @template.health_metrics.create(values)
       end
@@ -67,8 +62,8 @@ module Api
       render json: { errors: ["Unauthorized"] }, status: :forbidden
     end
 
-    def permitted_params
-      @permitted_params ||= params.require(:template).permit(
+    def update_params
+      @update_params ||= params.require(:template).permit(
         *fields,
         metrics: [
           "metric_name",
@@ -79,8 +74,12 @@ module Api
       )
     end
 
-    def field_names
-      permitted_params.select { |k, v| k.match?(/field_name_\d+/) && v.present? }
+    def create_params
+      @create_params ||= params.require(:template).permit(*fields)
+    end
+
+    def field_names(params)
+      params.select { |k, v| k.match?(/field_name_\d+/) && v.present? }
     end
 
     def fields
