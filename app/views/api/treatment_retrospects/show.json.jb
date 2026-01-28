@@ -1,1 +1,4 @@
-render partial: "treatment_retrospect", locals: { treatment_retrospect: @treatment_retrospect }
+retrospect = render partial: "treatment_retrospect", locals: { treatment_retrospect: @treatment_retrospect }
+treatment = render partial: "api/treatments/treatment", locals: { treatment: @treatment }
+
+render body: { treatment_retrospect: retrospect, treatment: treatment }.to_json

@@ -1,5 +1,8 @@
+treatment = render partial: "api/treatments/treatment", locals: { treatment: @treatment }
+
 treatment_retrospects = @treatment_retrospects.map do |treatment_retrospect|
   render partial: "treatment_retrospect", locals: { treatment_retrospect: treatment_retrospect }
 end
 
-render body: { treatment_retrospects: treatment_retrospects, total_records: @total_records }.to_json
+render body: { treatment_retrospects: treatment_retrospects, total_records: @total_records,
+               treatment: treatment }.to_json
