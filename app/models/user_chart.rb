@@ -28,4 +28,20 @@ class UserChart < ApplicationRecord
     end
     update(chart_type: chart_type, **params)
   end
+
+  def self.create_with_mode(params)
+    mode = params[:chart_mode]
+
+    chart_type =
+      case mode
+      when "treatment_comparison" then "boxplot"
+      when "metric_over_time"     then "line"
+      when "metric_frequency"     then "bar"
+      when "metric_vs_metric"     then "scatter"
+      else
+        raise ArgumentError, "Unknown chart mode"
+      end
+
+    create!(chart_type: chart_type, **params)
+  end
 end

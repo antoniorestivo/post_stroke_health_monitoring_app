@@ -142,12 +142,12 @@ class DemoSeedUser
         updated_at: start_date + i.days,
         description: row[6],
         metrics: {
-          sleep_hours: row[0],
-          energy_level: row[1],
-          exercise_intensity: row[2],
-          systolic_bp: row[3],
-          diastolic_bp: row[4],
-          weight: row[5]
+          "Sleep Hours" => row[0],
+          "Energy Level" => row[1],
+          "Exercise Intensity" => row[2],
+          "Systolic BP" => row[3],
+          "Diastolic BP" => row[4],
+          "Weight" => row[5]
         }
       )
     end
@@ -157,8 +157,9 @@ class DemoSeedUser
       title: "Sleep vs Energy Level"
     ) do |c|
       c.chart_type = "scatter"
-      c.x_label = "sleep_hours"
-      c.y_label = "energy_level"
+      c.chart_mode = "metric_vs_metric"
+      c.x_label = "Sleep Hours"
+      c.y_label = "Energy Level"
     end
 
     UserChart.find_or_create_by!(
@@ -166,8 +167,9 @@ class DemoSeedUser
       title: "Blood Pressure Trend"
     ) do |c|
       c.chart_type = "line"
+      c.chart_mode = "metric_over_time"
       c.x_label = "Time"
-      c.y_label = "systolic_bp"
+      c.y_label = "Systolic BP"
     end
 
     UserChart.find_or_create_by!(
@@ -175,8 +177,9 @@ class DemoSeedUser
       title: "Weight Trend"
     ) do |c|
       c.chart_type = "line"
+      c.chart_mode = "metric_over_time"
       c.x_label = "Time"
-      c.y_label = "weight"
+      c.y_label = "Weight"
     end
   end
 end

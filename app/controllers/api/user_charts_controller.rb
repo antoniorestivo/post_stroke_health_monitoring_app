@@ -9,7 +9,7 @@ module Api
     def show
       @chart = UserChart.find(params[:id])
       journals = current_user.journals.order(created_at: :asc)
-      @data = ::UserCharts::Enrich.new(@chart, journals).data
+      @data = ::UserCharts::Enrich.build(@chart, journals)
 
       render :show, formats: [:json]
     end
@@ -21,7 +21,7 @@ module Api
     end
 
     def create
-      UserChart.create_with_implicit_type(permitted_params)
+      UserChart.create_with_mode(permitted_params)
     end
 
     def edit
@@ -42,7 +42,7 @@ module Api
     private
 
     def permitted_params
-      params.permit(:x_label, :y_label, :user_id, :title, options: {})
+      params.permit(:x_label, :y_label, :user_id, :title, :chart_mode, options: {})
     end
   end
 end

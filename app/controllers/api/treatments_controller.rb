@@ -50,7 +50,7 @@ module Api
     end
 
     def treatment_params
-      params.require(:treatment).permit(:description)
+      params.require(:treatment).permit(:description, :name)
     end
   end
 end

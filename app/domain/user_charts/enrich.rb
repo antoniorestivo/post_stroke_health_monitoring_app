@@ -2,9 +2,29 @@ module UserCharts
   class Enrich
     attr_reader :user_chart, :journals
 
+    def self.build(user_chart, journals)
+      instance = new(user_chart, journals)
+      instance.assign_data
+    end
+
     def initialize(user_chart, journals)
       @user_chart = user_chart
       @journals = journals
+    end
+
+    def assign_data
+      case user_chart.chart_mode
+      when "treatment_comparison"
+        handle_boxplot
+      when "metric_over_time"
+        handle_metric_over_time
+      when "metric_frequency"
+        handle_metric_frequency
+      when "metric_vs_metric"
+        handle_metric_vs_metric
+      else
+        raise "Unknown chart mode"
+      end
     end
 
     def data
@@ -18,9 +38,21 @@ module UserCharts
     private
 
     def handle_boxplot
-      treatment_ids = user_chart.options['treatmentIds']
+      treatment_ids = user_chart.options['treatment_ids']
       retrospects = TreatmentRetrospect.where(treatment_id: treatment_ids).order(treatment_id: :asc)
       UserCharts::TreatmentComparisons::Construct.build(user_chart, retrospects)
+    end
+
+    def handle_metric_over_time
+      UserCharts::Modes::HandleMetricOverTime.build(user_chart, journals)
+    end
+
+    def handle_metric_frequency
+      #TBD
+    end
+
+    def handle_metric_vs_metric
+      UserCharts::Modes::HandleMetricVsMetric.build(user_chart, metrics)
     end
 
     def refined_x_data
@@ -65,10 +97,6 @@ module UserCharts
       @y_label ||= user_chart.y_label
     end
 
-    def metrics
-      @metrics ||= journals.map(&:metrics)
-    end
-
     def chart_type
       @chart_type ||= user_chart.chart_type
     end
@@ -91,6 +119,10 @@ module UserCharts
 
     def find_warning_thresholds
       { x: x_metric&.warning_threshold, y: y_metric&.warning_threshold }
+    end
+
+    def metrics
+      @metrics ||= journals.pluck(:metrics)
     end
   end
 end

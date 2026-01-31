@@ -20,7 +20,7 @@ module UserCharts
 
       def labels
         treatment_ids = data.keys
-        Treatment.where(id: treatment_ids).order(id: :asc).pluck(:description).map { |str| str.slice(0, 15) }
+        Treatment.where(id: treatment_ids).order(id: :asc).pluck(:name)
       end
 
       def datasets
