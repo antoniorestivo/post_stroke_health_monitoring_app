@@ -48,7 +48,7 @@ module UserCharts
     end
 
     def handle_metric_frequency
-      #TBD
+      UserCharts::Modes::HandleMetricFrequency.build(user_chart, journals)
     end
 
     def handle_metric_vs_metric

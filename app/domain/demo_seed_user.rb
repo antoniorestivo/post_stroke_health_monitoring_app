@@ -16,38 +16,44 @@ class DemoSeedUser
     metrics = [
       {
         metric_name: "Sleep Hours",
-        metric_data_type: "number",
+        metric_data_type: "numeric",
         metric_unit_name: "hours",
         warning_threshold: 6
       },
       {
         metric_name: "Energy Level",
-        metric_data_type: "number",
+        metric_data_type: "numeric",
         metric_unit_name: "scale_1_5",
         warning_threshold: 2
       },
       {
         metric_name: "Exercise Intensity",
-        metric_data_type: "number",
+        metric_data_type: "numeric",
         metric_unit_name: "scale_0_3",
         warning_threshold: 0
       },
       {
         metric_name: "Systolic BP",
-        metric_data_type: "number",
+        metric_data_type: "numeric",
         metric_unit_name: "mmHg",
         warning_threshold: 140
       },
       {
         metric_name: "Diastolic BP",
-        metric_data_type: "number",
+        metric_data_type: "numeric",
         metric_unit_name: "mmHg",
         warning_threshold: 90
       },
       {
         metric_name: "Weight",
-        metric_data_type: "number",
+        metric_data_type: "numeric",
         metric_unit_name: "lbs"
+      },
+      {
+        metric_name: "Mood",
+        metric_data_type: "categorical",
+        metric_unit_name: "state",
+        warning_threshold: nil
       }
     ]
 
@@ -73,6 +79,7 @@ class DemoSeedUser
     sleep_treatment = Treatment.find_or_create_by!(
       condition_id: sleep_condition.id
     ) do |t|
+      t.name = "Bedtime Consistency"
       t.description = "Maintain a consistent bedtime and reduce screen use after 10pm."
     end
 
@@ -94,6 +101,7 @@ class DemoSeedUser
     cardio_treatment = Treatment.find_or_create_by!(
       condition_id: cardio_condition.id
     ) do |t|
+      t.name = "Exercise"
       t.description = "Moderate exercise 3–4 times per week and improved sleep consistency."
     end
 
@@ -106,31 +114,31 @@ class DemoSeedUser
 
     journal_data = [
       # Week 1
-      [5.5,2,0,138,88,198.4,"Late night, restless"],
-      [6.0,2,1,140,90,198.2,"Groggy morning"],
-      [5.0,1,0,142,92,198.5,"Poor sleep"],
-      [6.5,3,2,136,86,198.0,"Evening workout"],
-      [7.0,3,1,134,85,197.8,"Felt okay"],
-      [8.0,4,2,130,82,197.5,"Relaxed day"],
-      [6.0,2,0,138,88,197.9,"Inconsistent bedtime"],
+      [5.5,2,0,138,88,198.4,"Late night, restless","lethargic"],
+      [6.0,2,1,140,90,198.2,"Groggy morning","tense"],
+      [5.0,1,0,142,92,198.5,"Poor sleep","lethargic"],
+      [6.5,3,2,136,86,198.0,"Evening workout","relaxed"],
+      [7.0,3,1,134,85,197.8,"Felt okay","relaxed"],
+      [8.0,4,2,130,82,197.5,"Relaxed day","relaxed"],
+      [6.0,2,0,138,88,197.9,"Inconsistent bedtime","tense"],
 
       # Week 2
-      [6.5,3,1,136,86,197.6,"Earlier bedtime"],
-      [7.0,4,2,132,84,197.2,"Morning walk"],
-      [7.2,4,0,130,82,197.0,"Good focus"],
-      [6.8,3,1,134,85,196.9,"Mild fatigue"],
-      [7.5,4,2,128,80,196.5,"Best day"],
-      [8.0,5,3,126,78,196.2,"Strong workout"],
-      [7.0,4,0,130,82,196.4,"Stable mood"],
+      [6.5,3,1,136,86,197.6,"Earlier bedtime","relaxed"],
+      [7.0,4,2,132,84,197.2,"Morning walk","energetic"],
+      [7.2,4,0,130,82,197.0,"Good focus","energetic"],
+      [6.8,3,1,134,85,196.9,"Mild fatigue","tense"],
+      [7.5,4,2,128,80,196.5,"Best day","energetic"],
+      [8.0,5,3,126,78,196.2,"Strong workout","energetic"],
+      [7.0,4,0,130,82,196.4,"Stable mood","relaxed"],
 
       # Week 3
-      [7.2,4,1,128,80,196.1,"Productive"],
-      [7.5,5,2,126,78,195.9,"High energy"],
-      [7.0,4,0,128,80,196.0,"Slight dip"],
-      [7.8,5,2,124,78,195.7,"Best sleep"],
-      [7.0,4,1,126,79,195.6,"Consistent"],
-      [8.2,5,3,122,76,195.2,"Excellent"],
-      [7.5,4,0,124,78,195.4,"Rested"]
+      [7.2,4,1,128,80,196.1,"Productive","energetic"],
+      [7.5,5,2,126,78,195.9,"High energy","energetic"],
+      [7.0,4,0,128,80,196.0,"Slight dip","tense"],
+      [7.8,5,2,124,78,195.7,"Best sleep","energetic"],
+      [7.0,4,1,126,79,195.6,"Consistent","relaxed"],
+      [8.2,5,3,122,76,195.2,"Excellent","energetic"],
+      [7.5,4,0,124,78,195.4,"Rested","relaxed"]
     ]
 
     start_date = 21.days.ago.to_date
@@ -147,7 +155,8 @@ class DemoSeedUser
           "Exercise Intensity" => row[2],
           "Systolic BP" => row[3],
           "Diastolic BP" => row[4],
-          "Weight" => row[5]
+          "Weight" => row[5],
+          "Mood" => row[7]
         }
       )
     end
@@ -180,6 +189,15 @@ class DemoSeedUser
       c.chart_mode = "metric_over_time"
       c.x_label = "Time"
       c.y_label = "Weight"
+    end
+
+    UserChart.find_or_create_by!(
+      user_id: user.id,
+      title: "Mood Frequency"
+    ) do |c|
+      c.chart_type = "bar"
+      c.chart_mode = "metric_frequency"
+      c.x_label = "Mood"
     end
   end
 end
