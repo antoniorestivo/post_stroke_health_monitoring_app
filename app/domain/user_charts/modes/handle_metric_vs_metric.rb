@@ -37,7 +37,8 @@ module UserCharts
       end
 
       def find_warning_thresholds
-        { x: x_metric&.warning_threshold, y: y_metric&.warning_threshold }
+        { x: x_metric&.warning_threshold, y: y_metric&.warning_threshold,
+          x_modifier: x_metric&.warning_modifier, y_modifier: y_metric&.warning_modifier }
       end
     end
   end

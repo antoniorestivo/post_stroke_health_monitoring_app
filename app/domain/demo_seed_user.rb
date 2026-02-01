@@ -18,31 +18,36 @@ class DemoSeedUser
         metric_name: "Sleep Hours",
         metric_data_type: "numeric",
         metric_unit_name: "hours",
-        warning_threshold: 6
+        warning_threshold: 6,
+        warning_modifier: "lteq"
       },
       {
         metric_name: "Energy Level",
         metric_data_type: "numeric",
         metric_unit_name: "scale_1_5",
-        warning_threshold: 2
+        warning_threshold: 2,
+        warning_modifier: "lteq"
       },
       {
         metric_name: "Exercise Intensity",
         metric_data_type: "numeric",
         metric_unit_name: "scale_0_3",
-        warning_threshold: 0
+        warning_threshold: 0,
+        warning_modifier: "lteq"
       },
       {
         metric_name: "Systolic BP",
         metric_data_type: "numeric",
         metric_unit_name: "mmHg",
-        warning_threshold: 140
+        warning_threshold: 140,
+        warning_modifier: "gteq"
       },
       {
         metric_name: "Diastolic BP",
         metric_data_type: "numeric",
         metric_unit_name: "mmHg",
-        warning_threshold: 90
+        warning_threshold: 90,
+        warning_modifier: "gteq"
       },
       {
         metric_name: "Weight",
@@ -65,6 +70,7 @@ class DemoSeedUser
         m.metric_data_type = attrs[:metric_data_type]
         m.metric_unit_name = attrs[:metric_unit_name]
         m.warning_threshold = attrs[:warning_threshold]
+        m.warning_modifier = attrs[:warning_modifier]
       end
     end
 

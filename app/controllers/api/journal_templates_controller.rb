@@ -13,8 +13,10 @@ module Api
         field_unit = create_params["field_unit_#{id}"]
         field_data_type = create_params["field_data_type_#{id}"]
         warning_threshold = create_params["warning_threshold_#{id}"]
+        warning_modifier = create_params["warning_modifier_#{id}"]
         HealthMetric.create(journal_template: journal_template, metric_name: v, metric_data_type: field_data_type,
-                            metric_unit_name: field_unit, warning_threshold: warning_threshold)
+                            metric_unit_name: field_unit, warning_threshold: warning_threshold,
+                            warning_modifier: warning_modifier)
       end
 
       if journal_template.save
@@ -36,7 +38,8 @@ module Api
       @template.health_metrics.destroy_all
 
       update_params["metrics"].each do |metric|
-        values = metric.slice("metric_name", "metric_data_type", "metric_unit_name", "warning_threshold")
+        values = metric.slice("metric_name", "metric_data_type", "metric_unit_name", "warning_threshold",
+                              "warning_modifier")
         @template.health_metrics.create(values)
       end
 
@@ -69,7 +72,8 @@ module Api
           "metric_name",
           "metric_data_type",
           "metric_unit_name",
-          "warning_threshold"
+          "warning_threshold",
+          "warning_modifier"
         ]
       )
     end
@@ -85,7 +89,7 @@ module Api
     def fields
       return [] unless params[:template].is_a?(ActionController::Parameters) || params[:template].is_a?(Hash)
 
-      regex_pattern = /(field_(name|unit|data_type)_\d+)|(warning_threshold_\d+)/
+      regex_pattern = /(field_(name|unit|data_type)_\d+)|(warning_threshold_\d+)|(warning_modifier_\d+)/
       params[:template].keys.select { |k| k.match?(regex_pattern) }
     end
 
