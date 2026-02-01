@@ -38,7 +38,7 @@ module UserCharts
     private
 
     def handle_boxplot
-      treatment_ids = user_chart.options['treatment_ids']
+      treatment_ids = user_chart.options['treatmentIds']
       retrospects = TreatmentRetrospect.where(treatment_id: treatment_ids).order(treatment_id: :asc)
       UserCharts::TreatmentComparisons::Construct.build(user_chart, retrospects)
     end

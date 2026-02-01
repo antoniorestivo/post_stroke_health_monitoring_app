@@ -83,13 +83,6 @@ class DemoSeedUser
       t.description = "Maintain a consistent bedtime and reduce screen use after 10pm."
     end
 
-    TreatmentRetrospect.find_or_create_by!(
-      treatment_id: sleep_treatment.id
-    ) do |tr|
-      tr.rating = 7
-      tr.feedback = "Consistency matters more than total hours. Energy feels more stable on regular sleep weeks."
-    end
-
     cardio_condition = Condition.find_or_create_by!(
       user_id: user.id,
       name: "Cardiovascular Health"
@@ -105,12 +98,15 @@ class DemoSeedUser
       t.description = "Moderate exercise 3–4 times per week and improved sleep consistency."
     end
 
-    TreatmentRetrospect.find_or_create_by!(
-      treatment_id: cardio_treatment.id
-    ) do |tr|
-      tr.rating = 6
-      tr.feedback = "Blood pressure trends downward with consistent exercise, though daily readings still fluctuate."
-    end
+    seed_retrospects(
+      sleep_treatment,
+      base_feedback: "Sleep consistency improved energy stability"
+    )
+
+    seed_retrospects(
+      cardio_treatment,
+      base_feedback: "Exercise helped overall cardiovascular trends"
+    )
 
     journal_data = [
       # Week 1
@@ -198,6 +194,34 @@ class DemoSeedUser
       c.chart_type = "bar"
       c.chart_mode = "metric_frequency"
       c.x_label = "Mood"
+    end
+
+    UserChart.find_or_create_by!(
+      user_id: user.id,
+      title: "Treatment Effectiveness Comparison",
+      y_label: "Treatment Rating (1–10)"
+    ) do |c|
+      c.chart_type = "boxplot"
+      c.chart_mode = "treatment_comparison"
+      c.options = {
+        treatmentIds: [sleep_treatment.id, cardio_treatment.id]
+      }
+    end
+  end
+
+  private
+
+  def seed_retrospects(treatment, base_feedback:)
+    ratings = [3, 4, 5, 6, 7, 6]
+
+    ratings.each_with_index do |rating, i|
+      TreatmentRetrospect.create!(
+        treatment_id: treatment.id,
+        rating: rating,
+        feedback: "#{base_feedback} (check-in #{i + 1})",
+        created_at: (14 - i * 2).days.ago,
+        updated_at: (14 - i * 2).days.ago
+      )
     end
   end
 end
