@@ -1,3 +1,5 @@
+require "sidekiq/web"
+
 Rails.application.routes.draw do
   namespace :api do
     resources :users, except: %i(index) do
@@ -25,5 +27,9 @@ Rails.application.routes.draw do
     post "/demo_login" => "sessions#demo"
 
     resources :journal_templates, only: %i(new create edit update)
+  end
+
+  if Rails.env.development?
+    mount Sidekiq::Web => "/sidekiq"
   end
 end
