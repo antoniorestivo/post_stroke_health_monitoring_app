@@ -15,7 +15,7 @@ class DemoSeedUser
 
     metrics = [
       {
-        metric_name: "Sleep Hours",
+        metric_name: "Sleep Time",
         metric_data_type: "numeric",
         metric_unit_name: "hours",
         warning_threshold: 6,
@@ -152,7 +152,7 @@ class DemoSeedUser
         updated_at: start_date + i.days,
         description: row[6],
         metrics: {
-          "Sleep Hours" => row[0],
+          "Sleep Time" => row[0],
           "Energy Level" => row[1],
           "Exercise Intensity" => row[2],
           "Systolic BP" => row[3],
@@ -169,7 +169,7 @@ class DemoSeedUser
     ) do |c|
       c.chart_type = "scatter"
       c.chart_mode = "metric_vs_metric"
-      c.x_label = "Sleep Hours"
+      c.x_label = "Sleep Time"
       c.y_label = "Energy Level"
     end
 

@@ -13,7 +13,8 @@ module UserCharts
       end
 
       def construct
-        { x: x_data, y: y_data, thresholds: find_warning_thresholds }
+        { x: x_data, y: y_data, thresholds: find_warning_thresholds, x_unit: x_metric&.metric_unit_name,
+          y_unit: y_metric&.metric_unit_name }
       end
 
       private
