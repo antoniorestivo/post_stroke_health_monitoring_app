@@ -29,7 +29,7 @@ class UserChart < ApplicationRecord
     update(chart_type: chart_type, **params)
   end
 
-  def self.create_with_mode(params)
+  def self.create_with_mode!(user, params)
     mode = params[:chart_mode]
 
     chart_type =
@@ -42,6 +42,6 @@ class UserChart < ApplicationRecord
         raise ArgumentError, "Unknown chart mode"
       end
 
-    create!(chart_type: chart_type, **params)
+    create!(user:, chart_type: chart_type, **params)
   end
 end

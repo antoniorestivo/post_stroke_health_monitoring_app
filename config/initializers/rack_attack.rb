@@ -2,7 +2,10 @@
 
 class Rack::Attack
   # Use a time-based sliding window for throttles
-  Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+  Rack::Attack.cache.store = ActiveSupport::Cache::RedisCacheStore.new(
+    url: ENV.fetch('REDIS_URL'),
+    namespace: 'rack-attack'
+  )
 
   # Allow all local traffic (useful for health checks, internal tooling, etc.)
   safelist('allow-localhost') do |req|
@@ -41,6 +44,14 @@ class Rack::Attack
   throttle('req/ip', limit: 300, period: 5.minutes) do |req|
     req.ip
   end
+
+  # throttle sensitive demo endpoint that creates demo users and associated records
+  throttle('demo-login/ip', limit: 5, period: 1.hour) do |req|
+    if req.post? && req.path == '/api/demo_login'
+      req.ip
+    end
+  end
+
 
   # Blocklist hook (for future use). You can add known-bad IPs or patterns here.
   # Example:

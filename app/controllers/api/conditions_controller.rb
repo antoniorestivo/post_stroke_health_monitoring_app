@@ -35,10 +35,9 @@ class Api::ConditionsController < Api::BaseController
   private
 
   def set_condition
-    @condition = current_user.conditions.find_by(id: params[:id])
-    return if @condition
-
-    render json: { errors: "Not found" }, status: :not_found
+    @condition = current_user.conditions.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { errors: ["Not found"] }, status: :not_found
   end
 
   def condition_params

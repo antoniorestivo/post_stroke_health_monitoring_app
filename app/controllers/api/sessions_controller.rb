@@ -3,19 +3,17 @@ class Api::SessionsController < Api::BaseController
   def create
     user = User.find_by(email: params[:email].to_s.downcase.strip)
 
-    UserLogin.create(user: user) if user
-
     if user && !user.email_confirmed?
       ensure_confirmation_token(user)
       send_confirmation_email(user)
 
-      render json: {
-        error: 'Email not confirmed',
-        message: 'We have sent you an email with a confirmation link. Please confirm your email before logging in.'
-      }, status: :unauthorized and return
+      render json: { errors: ['Invalid email or password'] },
+             status: :unauthorized and return
     end
 
     if user&.authenticate(params[:password].to_s)
+      UserLogin.create!(user: user)
+
       jwt = JWT.encode(
         {
           user_id: user.id,
@@ -33,22 +31,25 @@ class Api::SessionsController < Api::BaseController
         }
       }, status: :created
     else
-      render json: { error: 'Invalid email or password' }, status: :unauthorized
+      render json: { errors: ['Invalid email or password'] }, status: :unauthorized
     end
   end
 
   def demo
-    demo_user = User.create!(
-      email: "demo_#{SecureRandom.hex(6)}@example.com",
-      email_confirmed: true,
-      first_name: 'Alex',
-      last_name: 'The Demo User',
-      password: SecureRandom.hex(12),
-      demo: true,
-      confirmed_at: Time.current
-    )
+    demo_user = nil
 
-    DemoSeedUser.call(demo_user)
+    User.transaction do
+      demo_user = User.create!(
+        email: "demo_#{SecureRandom.hex(6)}@example.com",
+        email_confirmed: true,
+        first_name: 'Alex',
+        last_name: 'The Demo User',
+        password: SecureRandom.hex(12),
+        demo: true,
+        confirmed_at: Time.current
+      )
+      DemoSeedUser.call(demo_user)
+    end
 
     token = JWT.encode(
       {

@@ -5,30 +5,36 @@ module Api
     private
 
     def current_user
-      auth_header =
-        request.headers["Authorization"] ||
-        request.headers["HTTP_AUTHORIZATION"]
+      return @current_user if defined?(@current_user)
 
-      return unless auth_header&.match?(/\ABearer /)
+      token = bearer_token
+      return @current_user = nil if token.blank?
 
-      token = auth_header.split(" ", 2).last
-
-      decoded_token = JWT.decode(
+      payload, = JWT.decode(
         token,
-        Rails.application.secret_key_base,
+        jwt_secret_key,
         true,
         algorithm: "HS256"
       )
 
-      User.find_by(id: decoded_token[0]["user_id"])
+      @current_user = User.find_by(id: payload["user_id"])
     rescue JWT::ExpiredSignature, JWT::DecodeError
-      nil
+      @current_user = nil
     end
 
     def authenticate_user
-      Rails.logger.warn("Headers: #{request.headers.to_h.slice('Authorization', 'HTTP_AUTHORIZATION')}")
-
       render json: { error: "Unauthorized" }, status: :unauthorized unless current_user
+    end
+
+    def bearer_token
+      auth_header = request.headers["Authorization"] || request.headers["HTTP_AUTHORIZATION"]
+      return nil unless auth_header&.start_with?("Bearer ")
+
+      auth_header.split(" ", 2).last
+    end
+
+    def jwt_secret_key
+      ENV["JWT_SECRET_KEY"].presence || Rails.application.secret_key_base
     end
   end
 end

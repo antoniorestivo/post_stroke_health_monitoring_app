@@ -1,13 +1,13 @@
 module Api
   class UserChartsController < Api::BaseController
+    before_action :set_chart, only: [:show, :edit, :update, :destroy]
+
     def index
       @charts = current_user.user_charts
-
       render :index, formats: [:json]
     end
 
     def show
-      @chart = UserChart.find(params[:id])
       journals = current_user.journals.order(created_at: :asc)
       @data = ::UserCharts::Enrich.build(@chart, journals)
 
@@ -21,28 +21,46 @@ module Api
     end
 
     def create
-      UserChart.create_with_mode(permitted_params)
+      chart = UserChart.create_with_mode!(current_user, chart_params)
+      render json: { id: chart.id }, status: :created
+    rescue ActiveRecord::RecordInvalid => e
+      render json: { errors: e.record.errors.full_messages }, status: :unprocessable_content
     end
 
     def edit
-      chart = UserChart.find(params[:id])
       health_metrics = current_user.health_metrics.select(:metric_name)
-      @data = { chart: chart, health_metrics: health_metrics }
-      render json: @data
+      render json: { chart: @chart, health_metrics: health_metrics }
     end
 
     def update
-      UserChart.find(params[:id]).update(permitted_params)
+      @chart.update!(chart_params)
+      head :no_content
+    rescue ActiveRecord::RecordInvalid => e
+      render json: { errors: e.record.errors.full_messages }, status: :unprocessable_content
     end
 
     def destroy
-      UserChart.find(params[:id]).destroy
+      @chart.destroy
+      head :no_content
     end
 
     private
 
-    def permitted_params
-      params.permit(:x_label, :y_label, :user_id, :title, :chart_mode, options: {})
+    def set_chart
+      @chart = current_user.user_charts.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      render json: { errors: ["Not found"] }, status: :not_found
+      return
+    end
+
+    def chart_params
+      params.require(:user_chart).permit(
+        :x_label,
+        :y_label,
+        :title,
+        :chart_mode,
+        options: {}
+      )
     end
   end
 end

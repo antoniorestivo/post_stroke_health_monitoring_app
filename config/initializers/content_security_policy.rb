@@ -1,25 +1,34 @@
-# Be sure to restart your server when you modify this file.
+Rails.application.config.content_security_policy do |policy|
+  # Default: only load resources from our own origin
+  policy.default_src :self
 
-# Define an application-wide content security policy.
-# See the Securing Rails Applications Guide for more information:
-# https://guides.rubyonrails.org/security.html#content-security-policy-header
+  # JavaScript: only from self (no inline scripts)
+  policy.script_src :self
 
-# Rails.application.configure do
-#   config.content_security_policy do |policy|
-#     policy.default_src :self, :https
-#     policy.font_src    :self, :https, :data
-#     policy.img_src     :self, :https, :data
-#     policy.object_src  :none
-#     policy.script_src  :self, :https
-#     policy.style_src   :self, :https
-#     # Specify URI for violation reports
-#     # policy.report_uri "/csp-violation-report-endpoint"
-#   end
-#
-#   # Generate session nonces for permitted importmap, inline scripts, and inline styles.
-#   config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
-#   config.content_security_policy_nonce_directives = %w(script-src style-src)
-#
-#   # Report violations without enforcing the policy.
-#   # config.content_security_policy_report_only = true
-# end
+  # Styles: Tailwind injects some inline styles
+  policy.style_src :self, :unsafe_inline
+
+  # Images: allow self, https URLs, and data URIs (charts, icons, etc.)
+  policy.img_src :self, :https, :data
+
+  # Fonts (if any via Tailwind or browser defaults)
+  policy.font_src :self, :https, :data
+
+  # API / XHR / WebSocket connections
+  connect_sources = [:self]
+  frontend_origin = ENV["FRONTEND_APP_ORIGIN"]
+  connect_sources << frontend_origin if frontend_origin.present?
+  policy.connect_src(*connect_sources)
+
+  # Disallow Flash, plugins, etc.
+  policy.object_src :none
+
+  # Prevent clickjacking
+  policy.frame_ancestors :none
+
+  # Base URI lockdown
+  policy.base_uri :self
+
+  # Form submissions only to self
+  policy.form_action :self
+end

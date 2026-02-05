@@ -1,61 +1,63 @@
 module Api
   class TreatmentRetrospectsController < Api::BaseController
-    before_action :load_treatment
+    before_action :set_treatment
+    before_action :set_treatment_retrospect, only: [:show, :update, :destroy]
+
     def index
-      limit = params[:limit] || 9
-      offset = params[:offset] || 0
-      @treatment_retrospects = TreatmentRetrospect.where(treatment: @treatment)
-                                                  .limit(limit)
-                                                  .offset(offset)
-      @total_records = TreatmentRetrospect.where(treatment: @treatment).count
+      limit = (params[:limit] || 9).to_i
+      limit = 100 if limit > 100
+      limit = 9 if limit <= 0
+
+      offset = (params[:offset] || 0).to_i
+      offset = 0 if offset.negative?
+
+      scope = @treatment.treatment_retrospects
+
+      @treatment_retrospects = scope.limit(limit).offset(offset)
+      @total_records = scope.count
     end
 
     def show
-      @treatment_retrospect = TreatmentRetrospect.where(id: params[:id], treatment: @treatment).first
     end
 
     def create
-      TreatmentRetrospect.create!(
-        treatment: @treatment,
-        rating: permitted_params[:rating],
-        feedback: permitted_params[:feedback]
-      )
-      render json: { success: true }, status: :ok
+      @treatment.treatment_retrospects.create!(retrospect_params)
+      head :created
+    rescue ActiveRecord::RecordInvalid => e
+      render json: { errors: e.record.errors.full_messages }, status: :unprocessable_content
     end
 
     def update
-      treatment_retrospect = TreatmentRetrospect.where(id: params[:id], treatment: @treatment).first
-      if treatment_retrospect &&
-        treatment_retrospect.update(rating: permitted_params[:rating], feedback: permitted_params[:feedback])
-
-        render json: { success: true }, status: :ok
-      else
-        render json: { success: false }, status: :unprocessable_content
-      end
-
+      @treatment_retrospect.update!(retrospect_params)
+      head :no_content
+    rescue ActiveRecord::RecordInvalid => e
+      render json: { errors: e.record.errors.full_messages }, status: :unprocessable_content
     end
 
     def destroy
-      treatment_retrospect = TreatmentRetrospect.where(id: params[:id], treatment: @treatment).first
-      if treatment_retrospect
-        treatment_retrospect.destroy
-        render json: { success: true }, status: :ok
-      else
-        render json: { success: false }, status: :unprocessable_content
-      end
+      @treatment_retrospect.destroy
+      head :no_content
     end
 
     private
 
-    def permitted_params
-      params.permit(:feedback, :treatment_id, :rating)
+    def set_treatment
+      @treatment = current_user.treatments.find(params[:treatment_id])
+    rescue ActiveRecord::RecordNotFound
+      render json: { errors: ["Not found"] }, status: :not_found
+      return
     end
 
-    def load_treatment
-      @treatment = current_user.treatments.where(id: params[:treatment_id]).first
-      return if @treatment
+    def set_treatment_retrospect
+      @treatment_retrospect =
+        @treatment.treatment_retrospects.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      render json: { errors: ["Not found"] }, status: :not_found
+      return
+    end
 
-      render json: { errors: "Not found" }, status: :not_found
+    def retrospect_params
+      params.require(:treatment_retrospect).permit(:rating, :feedback)
     end
   end
 end

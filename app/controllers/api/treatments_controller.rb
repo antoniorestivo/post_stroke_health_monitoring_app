@@ -15,21 +15,17 @@ module Api
     end
 
     def create
-      @treatment = @condition.treatments.build(treatment_params)
-
-      if @treatment.save
-        render :show, status: :created
-      else
-        render json: { errors: @treatment.errors.full_messages }, status: :unprocessable_content
-      end
+      @treatment = @condition.treatments.create!(treatment_params)
+      render :show, status: :created
+    rescue ActiveRecord::RecordInvalid => e
+      render json: { errors: e.record.errors.full_messages }, status: :unprocessable_content
     end
 
     def update
-      if @treatment.update(treatment_params)
-        render :show
-      else
-        render json: { errors: @treatment.errors.full_messages }, status: :unprocessable_content
-      end
+      @treatment.update!(treatment_params)
+      render :show
+    rescue ActiveRecord::RecordInvalid => e
+      render json: { errors: e.record.errors.full_messages }, status: :unprocessable_content
     end
 
     def destroy
@@ -40,13 +36,17 @@ module Api
     private
 
     def set_condition
-      @condition = current_user.conditions.find_by(id: params[:condition_id])
-      render json: { errors: "Not Found" }, status: :not_found unless @condition
+      @condition = current_user.conditions.find(params[:condition_id])
+    rescue ActiveRecord::RecordNotFound
+      render json: { errors: ["Not found"] }, status: :not_found
+      return
     end
 
     def set_treatment
-      @treatment = @condition.treatments.find_by(id: params[:id])
-      render json: { errors: "Not Found" }, status: :not_found unless @treatment
+      @treatment = @condition.treatments.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      render json: { errors: ["Not found"] }, status: :not_found
+      return
     end
 
     def treatment_params

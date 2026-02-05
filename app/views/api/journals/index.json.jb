@@ -3,6 +3,6 @@ journals = @journals.map do |journal|
   render partial: "journal", locals: { journal: journal, enriched_metrics: e_metrics}
 end
 
-template = render partial: "api/journal_templates/template", locals: { template: @journal_template }
+template = render partial: "api/journal_templates/template", locals: { template: @template }
 
 render body: { journals: journals, template: template, total_records: @total_records }.to_json

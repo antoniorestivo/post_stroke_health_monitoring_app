@@ -34,4 +34,8 @@ class User < ApplicationRecord
     self.confirmed_at = Time.current if respond_to?(:confirmed_at)
     save!
   end
+
+  def journal_template!
+    self.journal_template || raise(ActiveRecord::RecordNotFound)
+  end
 end

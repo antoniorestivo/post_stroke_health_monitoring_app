@@ -22,6 +22,7 @@ Rails.application.configure do
   # config.asset_host = "http://assets.example.com"
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
+  # ActiveStorage is not used in v1 demo (we store URLs only).
   config.active_storage.service = :local
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
@@ -88,6 +89,10 @@ Rails.application.configure do
   #   ENV["APP_HOST"],
   #   /.*\.example\.com/
   # ]
+
+  config.hosts = [
+    ENV.fetch("APP_HOST"),
+  ]
 
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }

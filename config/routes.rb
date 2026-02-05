@@ -2,7 +2,7 @@ require "sidekiq/web"
 
 Rails.application.routes.draw do
   namespace :api do
-    resources :users, except: %i(index) do
+    resources :users, except: %i(index edit update) do
       resources :user_charts
     end
 
@@ -26,7 +26,7 @@ Rails.application.routes.draw do
     post "/sessions" => "sessions#create"
     post "/demo_login" => "sessions#demo"
 
-    resources :journal_templates, only: %i(new create edit update)
+    resource :journal_templates, only: %i(new create edit update)
   end
 
   if Rails.env.development?
