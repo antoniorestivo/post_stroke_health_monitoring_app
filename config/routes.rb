@@ -1,6 +1,8 @@
 require "sidekiq/web"
 
 Rails.application.routes.draw do
+  get "up" => "rails/health#show", as: :rails_health_check
+
   namespace :api do
     resources :users, except: %i(index edit update) do
       resources :user_charts
