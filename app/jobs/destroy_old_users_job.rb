@@ -1,5 +1,5 @@
 class DestroyOldUsersJob < ApplicationJob
   def perform
-    User.where("created_at < ?", 48.hours.ago).find_each(&:destroy)
+    User.where(demo: true).where("created_at < ?", 48.hours.ago).find_each(&:destroy)
   end
 end

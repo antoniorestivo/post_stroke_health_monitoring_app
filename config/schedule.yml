@@ -1,0 +1,5 @@
+destroy_old_users:
+  cron: "0 4 * * *"
+  class: DestroyOldUsersJob
+  queue: low
+  description: "Delete users older than 48 hours (demo cleanup)"
